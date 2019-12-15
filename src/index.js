@@ -23,6 +23,7 @@ class Global extends React.Component {
     const hashHistory = createHashHistory();
     const {Header, Sider, Content, Footer} = Layout;
     const {SubMenu, Item} = Menu;
+    console.log(this)
     return (<Router>
       <Layout style={{
           display: 'flex',
@@ -78,6 +79,7 @@ class Global extends React.Component {
 }
 
 function Routes(props) {
+  console.log(props)
   return <Router>
     <Route exact path="/" component={Home}>
     </Route>
