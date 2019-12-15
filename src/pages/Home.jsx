@@ -72,46 +72,33 @@ export default class Home extends Component {
     const {Content, Footer, Header} = Layout;
     const columns = [
       {
-        title: '用例集名称',
+        title: '种类',
         dataIndex: 'title',
         key: 'title',
       },
       {
-        title: '创建人',
+        title: '总储量',
         dataIndex: 'creater',
         key: 'creater',
         render: d => d.acount
       },
       {
-        title: '创建时间',
+        title: '最新入库价格',
+        dataIndex: 'creater',
+        key: 'creater',
+        render: d => d.acount
+      },
+      {
+        title: '最新出库价格',
+        dataIndex: 'creater',
+        key: 'creater',
+        render: d => d.acount
+      },
+      {
+        title: '更新时间',
         dataIndex: 'created',
         key: 'created',
         render: d => m(d).format('YYYY-MM-DD')
-      },
-      {
-        title: '用例总数',
-        dataIndex: 'total',
-        key: 'total',
-        align: 'center'
-      },
-      {
-        title: '成功数量',
-        dataIndex: 'success',
-        key: 'success',
-        align: 'center',
-        render: d => <Tag color="green">{d || 0}</Tag>
-      },
-      {
-        title: '失败数量',
-        dataIndex: 'failed',
-        align: 'center',
-        key: 'failed',
-        render: d => <Tag color="red">{d || 0}</Tag>
-      },
-      {
-        title: '执行进度',
-        key: 'progress',
-        render: (d, r) => <Progress percent={((r.success) / r.total).toFixed(2) * 100}/>
       },
       {
         title: '操作',
@@ -128,7 +115,7 @@ export default class Home extends Component {
     return (
       <Layout style={{height: '100%', backgroundColor: '#fff', display: 'flex'}}>
         <Header style={{backgroundColor: '#fff', padding: 10, height: 'auto', lineHeight: 1}}>
-          <Button type="primary" onClick={this.showGroupAction.bind(this)}><Icon type="download"/>新增用例集</Button>
+          <Button type="primary" onClick={this.showGroupAction.bind(this)}><Icon type="download"/>新增库存</Button>
           <Button type="primary" style={{marginLeft: 10}} disabled><Icon type="download"/>导出报告</Button>
         </Header>
         <Content style={{overflow: 'auto'}}>

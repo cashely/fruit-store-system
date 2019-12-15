@@ -24,7 +24,7 @@ class Global extends React.Component {
           height: '100vh'
         }}>
         <Header style={{color: '#fff', padding: '15px 10px', height: 'auto', lineHeight: 1, fontSize: 20, display: 'flex', alignItems: 'center'}}>
-          <div style={{color: '#000', backgroundColor: '#fff', fontSize: 24, borderRadius: 5, width: 26, height: 26, fontWeight: 600, lineHeight: 1, textAlign: 'center', marginRight: 5}}>T</div>测试用例管理后台
+          <div style={{color: '#000', backgroundColor: '#fff', fontSize: 24, borderRadius: 5, width: 56, height: 26, fontWeight: 600, lineHeight: 1, textAlign: 'center', marginRight: 5}}>FSS</div>水果仓储系统
         </Header>
         <Layout style={{
             flex: 1
@@ -36,19 +36,25 @@ class Global extends React.Component {
                 borderRight: 0,
                 height: '100%'
               }}>
-              <SubMenu key="sub1" title={<span> < Icon type = "tool" /> 用例管理</span>}>
+              <SubMenu key="sub1" title={<span> < Icon type = "tool" /> 库存管理</span>}>
                 <Item key="1">
-                  <Link to="/"><Icon type="book"/> 用例集</Link>
+                  <Link to="/"><Icon type="book"/> 库存预览</Link>
                 </Item>
                 <Item key="2">
-                  <Link to="/add"><Icon type="user"/> 我的用例</Link>
+                  <Link to="/add"><Icon type="user"/> 入库管理</Link>
                 </Item>
                 <Item key="3">
-                  <Link to="/add"><Icon type="global"/> 统计</Link>
+                  <Link to="/add"><Icon type="global"/> 出库管理</Link>
                 </Item>
               </SubMenu>
               <Item key="4">
                 <Link to="/users"><Icon type="setting"/> 设置</Link>
+              </Item>
+              <Item key="4">
+                <Link to="/users"><Icon type="setting"/> 供应商管理</Link>
+              </Item>
+              <Item key="4">
+                <Link to="/users"><Icon type="setting"/> 水果种类管理</Link>
               </Item>
             </Menu>
           </Sider>
