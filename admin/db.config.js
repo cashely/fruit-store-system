@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 mongoose.promise = Promise
 mongoose.set('useFindAndModify', false);
-mongoose.connect('mongodb://127.0.0.1:27017/test_case_dev', {
+mongoose.connect('mongodb://127.0.0.1:27017/fruit_store_system_dev', {
     useNewUrlParser: true
 })
 

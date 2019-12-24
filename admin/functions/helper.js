@@ -6,6 +6,7 @@ const xlsx2json = require('node-xlsx');
 const formidable = require('formidable');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const staticPath = path.resolve(__dirname, '../public/uploads/')
 module.exports = {
   /**
@@ -26,6 +27,21 @@ module.exports = {
     }else {
       res.sendStatus(500)
     }
+  },
+  responseMiddleware(req, res, next) {
+    req.response = (statu, data) => {
+      if(statu === 200) {
+        res.json({
+          code: 0,
+          data: data
+        })
+      }else if(statu === 530) {
+        res.status(statu).json(data)
+      }else {
+        res.sendStatus(500)
+      }
+    }
+    next();
   },
   getClientIp(req) {
     return req.headers['x-forwarded-for'] ||
@@ -102,5 +118,10 @@ module.exports = {
         })
       })
     })
+  },
+  getSha1(str) {
+    var sha1 = crypto.createHash('sha1');
+    sha1.update(str);
+    return sha1.digest('hex');
   }
 }

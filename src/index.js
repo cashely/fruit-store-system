@@ -7,6 +7,11 @@ import Home from './pages/Home';
 import Add from './pages/Add';
 import DetailList from './pages/DetailList';
 import User from './pages/User';
+import Outer from './pages/Outer';
+import Inner from './pages/Inner';
+import Pushers from './pages/Pushers';
+import Pullers from './pages/Pullers';
+import Fruits from './pages/Fruits';
 import * as serviceWorker from './serviceWorker';
 
 import {Layout, Menu, Icon} from 'antd';
@@ -18,13 +23,14 @@ class Global extends React.Component {
     const hashHistory = createHashHistory();
     const {Header, Sider, Content, Footer} = Layout;
     const {SubMenu, Item} = Menu;
+    console.log(this)
     return (<Router>
       <Layout style={{
           display: 'flex',
           height: '100vh'
         }}>
         <Header style={{color: '#fff', padding: '15px 10px', height: 'auto', lineHeight: 1, fontSize: 20, display: 'flex', alignItems: 'center'}}>
-          <div style={{color: '#000', backgroundColor: '#fff', fontSize: 24, borderRadius: 5, width: 56, height: 26, fontWeight: 600, lineHeight: 1, textAlign: 'center', marginRight: 5}}>FSS</div>水果仓储系统
+          <div style={{color: '#000', backgroundColor: '#fff', fontSize: 24, borderRadius: 5, width: 56, height: 26, fontWeight: 600, lineHeight: 1, textAlign: 'center', marginRight: 5}}>FSS</div>水果管理系统
         </Header>
         <Layout style={{
             flex: 1
@@ -41,20 +47,23 @@ class Global extends React.Component {
                   <Link to="/"><Icon type="book"/> 库存预览</Link>
                 </Item>
                 <Item key="2">
-                  <Link to="/add"><Icon type="user"/> 入库管理</Link>
+                  <Link to="/inner"><Icon type="user"/> 入库管理</Link>
                 </Item>
                 <Item key="3">
-                  <Link to="/add"><Icon type="global"/> 出库管理</Link>
+                  <Link to="/outer"><Icon type="global"/> 出库管理</Link>
                 </Item>
               </SubMenu>
               <Item key="4">
                 <Link to="/users"><Icon type="setting"/> 设置</Link>
               </Item>
-              <Item key="4">
-                <Link to="/users"><Icon type="setting"/> 供应商管理</Link>
+              <Item key="5">
+                <Link to="/pullers"><Icon type="setting"/> 供应商管理</Link>
               </Item>
-              <Item key="4">
-                <Link to="/users"><Icon type="setting"/> 水果种类管理</Link>
+              <Item key="6">
+                <Link to="/pushers"><Icon type="setting"/> 出货商管理</Link>
+              </Item>
+              <Item key="7">
+                <Link to="/fruits"><Icon type="setting"/> 水果种类管理</Link>
               </Item>
             </Menu>
           </Sider>
@@ -70,6 +79,7 @@ class Global extends React.Component {
 }
 
 function Routes(props) {
+  console.log(props)
   return <Router>
     <Route exact path="/" component={Home}>
     </Route>
@@ -79,6 +89,11 @@ function Routes(props) {
     </Route>
     <Route exact path="/users" component={User}>
     </Route>
+    <Route exact path="/outer" component={Outer} />
+    <Route exact path="/inner" component={Inner} />
+    <Route exact path="/pushers" component={Pushers} />
+    <Route exact path="/pullers" component={Pullers} />
+    <Route exact path="/fruits" component={Fruits} />
   </Router>
 }
 
