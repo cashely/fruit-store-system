@@ -3,17 +3,56 @@ import { DatePicker, Layout, Pagination, Table, Tag, Progress, Button, Icon, Upl
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
+import FruitModel from '../components/models/FruitModel';
 
 export default class Outer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      groups: [],
+      fruits: [],
       total: 0,
+      id: null,
+      visible: {
+        fruit: false
+      }
     }
   }
 
+  cancelModelAction(modelName) {
+    const visible = _.cloneDeep(this.state.visible);
+    visible[modelName] = false;
+    this.setState({
+      visible,
+      id: null
+    })
+  }
+
+  openModelAction(modelName, id = null) {
+    const visible = _.cloneDeep(this.state.visible);
+    visible[modelName] = true;
+    this.setState({
+      visible,
+      id
+    })
+  }
+
+  okFruitModelAction() {
+    this.cancelModelAction('fruit');
+    this.listAction();
+  }
+
+  listAction() {
+    $.get('/fruits').then(res => {
+      if(res.code === 0) {
+        this.setState({
+          fruits: res.data
+        })
+      }
+    })
+  }
+
   componentWillMount() {
+    this.listAction();
   }
   render() {
     const {Content, Footer, Header} = Layout;
@@ -25,14 +64,24 @@ export default class Outer extends Component {
       },
       {
         title: '状态',
-        dataIndex: 'created',
-        key: 'created',
-        render: d => m(d).format('YYYY-MM-DD')
+        dataIndex: 'statu',
+        render: d => d === 1 ? <Tag color="green">正常</Tag> : <Tag color="red">停售</Tag>
+      },
+      {
+        title: '当前库存',
+        render: d => d.total >= d.min ? <Tag color="green">{d.total}</Tag> : <Tag color="red">{d.total}</Tag>
+      },
+      {
+        title: '入库价格',
+        dataIndex: 'innerPrice'
+      },
+      {
+        title: '出库价格',
+        dataIndex: 'outerPrice'
       },
       {
         title: '创建时间',
-        dataIndex: 'created',
-        key: 'created',
+        dataIndex: 'createdAt',
         render: d => m(d).format('YYYY-MM-DD')
       },
       {
@@ -41,7 +90,7 @@ export default class Outer extends Component {
         align: 'center',
         render: row => (
           <React.Fragment>
-            <Button type="primary" onClick={(e) => {e.stopPropagation(); this.showGroupAction(row._id)}} size="small"><Icon type="edit"/></Button>
+            <Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('fruit', row._id)}} size="small"><Icon type="edit"/></Button>
             <Button style={{marginLeft: 10}} type="danger" size="small"><Icon type="delete"/></Button>
           </React.Fragment>
         )
@@ -50,11 +99,14 @@ export default class Outer extends Component {
     return (
       <Layout style={{height: '100%', backgroundColor: '#fff', display: 'flex'}}>
         <Header style={{backgroundColor: '#fff', padding: 10, height: 'auto', lineHeight: 1}}>
-          <Button type="primary" onClick={() => {}}><Icon type="plus"/>新增</Button>
+          <Button type="primary" onClick={this.openModelAction.bind(this, 'fruit', null)}><Icon type="plus"/>新增</Button>
         </Header>
         <Content style={{overflow: 'auto'}}>
-          <Table rowKey="_id" onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.groups} size="middle" bordered pagination={false}/>
-      </Content>
+          <Table rowKey="_id" onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.fruits} size="middle" bordered pagination={false}/>
+          {
+            this.state.visible.fruit && <FruitModel id={this.state.id} visible={this.state.visible.fruit} onOk={this.okFruitModelAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'fruit')}/>
+          }
+        </Content>
         <Footer style={{padding: 5, backgroundColor: '#fff'}}>
           <Pagination defaultCurrent={1} total={this.state.total}/>
         </Footer>

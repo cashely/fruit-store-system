@@ -5,11 +5,17 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 var bodyParser = require('body-parser');
+const passport = require('passport');
 var router = require('./router.js');
 
 var app = express();
 const session = require('./session')
 const db = require('./db.config.js')
+
+require('./passport/index').init(passport)
+
+const {responseMiddleware} = require('./functions/helper');
+app.use(responseMiddleware);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -37,6 +43,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/upload')))
 app.use(session());
+app.use(passport.initialize());
+app.use(passport.session());
 router(app);
 // app.use('/', indexRouter);
 // app.use('/users', usersRouter);

@@ -9,6 +9,15 @@ const Pushers = new mongoose.Schema({
     type: Number,
     default: 1 // 1 - 正常
   },
+  contact: {
+    type: String
+  },
+  tel: {
+    type: String
+  },
+  address: {
+    type: String
+  },
   creater: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'users'

@@ -1,4 +1,5 @@
 const mongoose = require('../db.config');
+const {getSha1} = require('../functions/helper');
 
 let Users = new mongoose.Schema({
   acount: {
@@ -31,7 +32,7 @@ Users.findOne().then(res => {
     console.log('系统还没有用户，初始化root用户，密码为root');
     new Users({
       acount: 'root',
-      password: 'root'
+      password: getSha1('root')
     }).save((err, res) => {
       if(!err) {
         console.log('初始化用户完毕!')

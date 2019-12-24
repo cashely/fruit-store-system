@@ -15,7 +15,7 @@ module.exports = {
     if(q._k) {
       conditions.acount = new RegExp(q._k);
     }
-    models.users.find(conditions).limit(limit).skip(skip)
+    models.users.find(conditions).limit(limit).skip(skip).sort({updatedAt: -1})
     .then(users => {
       response(200, users, res)
     }).catch(error => {

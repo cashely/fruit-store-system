@@ -30,7 +30,7 @@ class Global extends React.Component {
           height: '100vh'
         }}>
         <Header style={{color: '#fff', padding: '15px 10px', height: 'auto', lineHeight: 1, fontSize: 20, display: 'flex', alignItems: 'center'}}>
-          <div style={{color: '#000', backgroundColor: '#fff', fontSize: 24, borderRadius: 5, width: 56, height: 26, fontWeight: 600, lineHeight: 1, textAlign: 'center', marginRight: 5}}>FSS</div>水果仓储系统
+          <div style={{color: '#000', backgroundColor: '#fff', fontSize: 24, borderRadius: 5, width: 56, height: 26, fontWeight: 600, lineHeight: 1, textAlign: 'center', marginRight: 5}}>FSS</div>水果管理系统
         </Header>
         <Layout style={{
             flex: 1

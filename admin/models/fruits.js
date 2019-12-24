@@ -9,9 +9,33 @@ const Fruits = new mongoose.Schema({
     type: Number,
     default: 1 // 1 - 正常
   },
+  outerPrice: {
+    type: Number,
+    default: 0
+  },
+  innerPrice: {
+    type: Number,
+    default: 0
+  },
+  unit: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'units'
+  },
+  total: {
+    type: Number,
+    default: 0
+  },
   isCreated: {
     type: Boolean,
     default: true
+  },
+  min: { // 最小存量报警
+    type: Number,
+    default: 1000
+  },
+  warn: {
+    type: Number,
+    default: 2
   },
   creater: {
     type: mongoose.Schema.Types.ObjectId,

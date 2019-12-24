@@ -1,9 +1,10 @@
 const mongoose = require('../db.config');
 
 const Inners = new mongoose.Schema({
-  title: {
+  fruit: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'fruits'
+    ref: 'fruits',
+    required: true
   },
   count: {
     type: Number,

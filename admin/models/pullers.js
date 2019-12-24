@@ -13,6 +13,15 @@ const Pullers = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'users'
   },
+  contact: {
+    type: String
+  },
+  tel: {
+    type: String
+  },
+  address: {
+    type: String
+  },
   mark: {
     type: String
   }
