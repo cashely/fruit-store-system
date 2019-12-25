@@ -39,7 +39,7 @@ module.exports = {
     })
   },
   update(req, res) {
-    const {id} = req.params.id;
+    const id = req.params.id;
     const {title, statu, contact, address, tel,} = req.body;
     const conditions = {
       title,

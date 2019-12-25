@@ -84,7 +84,7 @@ export default class Outer extends Component {
       },
       {
         title: '送货方',
-        dataIndex: 'puller',
+        dataIndex: 'pusher',
         render: d => d && d.title
       },
       {

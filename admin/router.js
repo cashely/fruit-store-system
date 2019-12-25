@@ -22,7 +22,7 @@ module.exports = (app) => {
     res.json({test: req.isAuthenticated(), uid: req.user, session: req.session, password: getSha1('root')})
   })
   .get('/login/:acount/:password', (req, res, next) => {
-
+    console.log(req.params.acount, req.params.password)
     if(req.params.acount === 'root' && req.params.password === 'root') {
       req.body = {
         acount: 'root',

@@ -158,7 +158,7 @@ export default class Home extends Component {
                   <Col span={10}>
                     <Card>
                       <PieChart dataSource={this.state.fruits}/>
-                      <PieChart dataSource={this.state.outersMonth}/>
+                      <LineChart dataSource={this.state.outersMonth}/>
                     </Card>
                   </Col>
                 </Row>

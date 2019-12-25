@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactEcharts from 'echarts-for-react'
 import _ from 'lodash';
+import moment from 'moment';
 
 export default class Chart extends React.Component {
   constructor(props) {
@@ -8,16 +9,20 @@ export default class Chart extends React.Component {
   }
   render() {
     const {dataSource} = this.props;
+    console.log(dataSource, '12121')
     let groupDataByFruits = _.groupBy(dataSource, item => {
       return item.fruit._id;
     })
-
-    console.log(groupDataByFruits)
+    console.log(groupDataByFruits, '12121')
+    Object.keys(groupDataByFruits).map(key => {
+      groupDataByFruits[key] = _.groupBy(groupDataByFruits[key], item => moment(item.createdAt).format('YYYY-MM-DD'))
+    })
+    console.log(groupDataByFruits, '12121')
     const options = {
-      tooltip : {
-          trigger: 'item',
-          formatter: "{a} <br/>{b} : {c} ({d}%)"
-      },
+      // xAxis:{
+      //     type:'value',
+      //     splitNumber:24
+      // },
       legend: {
           orient: 'vertical',
           right: 10,
@@ -30,25 +35,37 @@ export default class Chart extends React.Component {
             return _s;
           })(),
       },
-      series : [
+      // series:[
+      //   Object.keys(groupDataByFruits).map(key => ({
+      //     name: key,
+      //     type: 'line',
+      //     data: Object.keys(groupDataByFruits[key]).map(key => ([key, 100]))
+      //   }))
+      // ]
+      xAxis: {
+        type:'time',
+      },
+      yAxis: {
+          type: 'value',
+          scale: false
+      },
+      series: [
           {
-              name: '数量',
-              type: 'pie',
-              radius : '55%',
-              center: ['30%', '60%'],
-              data: this.props.dataSource.map(fruit => ({value: fruit.total , name: fruit.title})),
-              itemStyle: {
-                  emphasis: {
-                      shadowBlur: 10,
-                      shadowOffsetX: 0,
-                      shadowColor: 'rgba(0, 0, 0, 0.5)'
-                  }
-              }
+              name:'邮件营销',
+              type:'line',
+              data:[['2014-12-01', 600],['2015-01-02', 300],['2015-01-04', 100]]
+          },
+          {
+              name:'邮件营2销',
+              type:'line',
+              data:[['2014-12-01', '100'],['2015-01-02', '200'],['2015-01-03', '400']]
           }
       ]
     }
+    console.log(options, 'options')
     return (
       <ReactEcharts style={{height: 302}} option={options}/>
+      // <div>12121</div>
     )
   }
 }
