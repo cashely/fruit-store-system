@@ -166,7 +166,7 @@ export default class Home extends Component {
                   <Col span={24}>
                     <Layout style={{marginTop: 10, backgroundColor: '#fff'}}>
                       <Header style={{backgroundColor: '#fff', padding: 10, height: 'auto', lineHeight: 1}}>
-                        <Button type="primary" onClick={this.showGroupAction.bind(this)}><Icon type="download"/>新增库存</Button>
+                        <Button type="primary" disabled onClick={this.showGroupAction.bind(this)}><Icon type="download"/>新增库存</Button>
                         <Button type="primary" style={{marginLeft: 10}} disabled><Icon type="download"/>导出报告</Button>
                       </Header>
                       <Content style={{overflow: 'auto'}}>
