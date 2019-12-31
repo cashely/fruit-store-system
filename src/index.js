@@ -12,19 +12,22 @@ import Inner from './pages/Inner';
 import Pushers from './pages/Pushers';
 import Pullers from './pages/Pullers';
 import Fruits from './pages/Fruits';
+import Login from './pages/Login';
 import * as serviceWorker from './serviceWorker';
+import zhCN from 'antd/es/locale/zh_CN';
 
-import {Layout, Menu, Icon} from 'antd';
-import {Switch, HashRouter as Router, Route, Link} from 'react-router-dom';
+import {Layout, Menu, Icon, ConfigProvider} from 'antd';
+import {Switch, HashRouter as Router, Route, Link, useRouteMatch, useLocation} from 'react-router-dom';
 import {createHashHistory} from 'history';
 import {withRouter} from 'react-router';
-class Global extends React.Component {
-  render() {
-    const hashHistory = createHashHistory();
-    const {Header, Sider, Content, Footer} = Layout;
-    const {SubMenu, Item} = Menu;
-    console.log(this)
-    return (<Router>
+function Index(props) {
+  const ro = useRouteMatch();
+  const lo = useLocation();
+  console.log(ro, lo)
+  const {Header, Sider, Content, Footer} = Layout;
+  const {SubMenu, Item} = Menu;
+  return (
+    <Router>
       <Layout style={{
           display: 'flex',
           height: '100vh'
@@ -38,32 +41,32 @@ class Global extends React.Component {
           <Sider width={200} style={{
               backgroundColor: '#fff'
             }}>
-            <Menu mode="inline" defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} style={{
+            <Menu mode="inline" defaultSelectedKeys={[lo.pathname]} defaultOpenKeys={['sub1']} style={{
                 borderRight: 0,
                 height: '100%'
               }}>
               <SubMenu key="sub1" title={<span> < Icon type = "tool" /> 库存管理</span>}>
-                <Item key="1">
-                  <Link to="/"><Icon type="book"/> 库存预览</Link>
+                <Item key="/index">
+                  <Link to="/index"><Icon type="book"/> 库存预览</Link>
                 </Item>
-                <Item key="2">
-                  <Link to="/inner"><Icon type="user"/> 入库管理</Link>
+                <Item key="/index/inner">
+                  <Link to="/index/inner"><Icon type="user"/> 入库管理</Link>
                 </Item>
-                <Item key="3">
-                  <Link to="/outer"><Icon type="global"/> 出库管理</Link>
+                <Item key="/index/outer">
+                  <Link to="/index/outer"><Icon type="global"/> 出库管理</Link>
                 </Item>
               </SubMenu>
-              <Item key="4">
-                <Link to="/users"><Icon type="setting"/> 设置</Link>
+              <Item key="/index/users">
+                <Link to="/index/users"><Icon type="setting"/> 设置</Link>
               </Item>
-              <Item key="5">
-                <Link to="/pullers"><Icon type="setting"/> 供应商管理</Link>
+              <Item key="/index/pullers">
+                <Link to="/index/pullers"><Icon type="setting"/> 供应商管理</Link>
               </Item>
-              <Item key="6">
-                <Link to="/pushers"><Icon type="setting"/> 出货商管理</Link>
+              <Item key="/index/pushers">
+                <Link to="/index/pushers"><Icon type="setting"/> 出货商管理</Link>
               </Item>
-              <Item key="7">
-                <Link to="/fruits"><Icon type="setting"/> 水果种类管理</Link>
+              <Item key="/index/fruits">
+                <Link to="/index/fruits"><Icon type="setting"/> 水果种类管理</Link>
               </Item>
             </Menu>
           </Sider>
@@ -74,27 +77,50 @@ class Global extends React.Component {
           </Layout>
         </Layout>
       </Layout>
-    </Router>)
-  }
+    </Router>
+  )
 }
 
 function Routes(props) {
-  console.log(props)
-  return <Router>
-    <Route exact path="/" component={Home}>
-    </Route>
-    <Route exact path="/add" component={Add}>
-    </Route>
-    <Route exact path="/detail-list/:id" component={DetailList}>
-    </Route>
-    <Route exact path="/users" component={User}>
-    </Route>
-    <Route exact path="/outer" component={Outer} />
-    <Route exact path="/inner" component={Inner} />
-    <Route exact path="/pushers" component={Pushers} />
-    <Route exact path="/pullers" component={Pullers} />
-    <Route exact path="/fruits" component={Fruits} />
-  </Router>
+  return (
+      <Switch>
+        <Route exact path="/index" component={Home}>
+        </Route>
+        <Route exact path="/index/add" component={Add}>
+        </Route>
+        <Route exact path="/index/detail-list/:id" component={DetailList}>
+        </Route>
+        <Route exact path="/index/users" component={User}>
+        </Route>
+        <Route exact path="/index/outer" component={Outer} />
+        <Route exact path="/index/inner" component={Inner} />
+        <Route exact path="/index/pushers" component={Pushers} />
+        <Route exact path="/index/pullers" component={Pullers} />
+        <Route exact path="/index/fruits" component={Fruits} />
+      </Switch>
+  )
+}
+
+
+function Global(props) {
+  const {Header, Sider, Content, Footer} = Layout;
+  return (
+    <ConfigProvider locale={zhCN}>
+      <Router>
+        <Layout style={{
+            display: 'flex',
+            height: '100vh'
+          }}>
+          <Content style={{padding: 10}}>
+            <Switch>
+              <Route component={Index} path="/index" />
+              <Route exact path="/" component={Login} />
+            </Switch>
+          </Content>
+        </Layout>
+      </Router>
+    </ConfigProvider>
+  )
 }
 
 ReactDOM.render(<Global/>, document.getElementById('root'));

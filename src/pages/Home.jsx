@@ -149,16 +149,16 @@ export default class Home extends Component {
             <Content>
                 <Row gutter={10}>
                   <Col span={14}>
-                    <Card title="价格看板">
+                    <Card>
                       {
-                        this.state.fruits.map(fruit => <Card.Grid style={GridStyle}><Statistic title={`入库:￥${fruit.innerPrice} 出库:￥${fruit.outerPrice}`} key={fruit._id} value={fruit.title}/></Card.Grid>)
+                        // this.state.fruits.map(fruit => <Card.Grid style={GridStyle}><Statistic title={`入库:￥${fruit.innerPrice} 出库:￥${fruit.outerPrice}`} key={fruit._id} value={fruit.title}/></Card.Grid>)
                       }
+                      <LineChart dataSource={this.state.outersMonth} fruits={this.state.fruits}/>
                     </Card>
                   </Col>
                   <Col span={10}>
                     <Card>
                       <PieChart dataSource={this.state.fruits}/>
-                      <LineChart dataSource={this.state.outersMonth}/>
                     </Card>
                   </Col>
                 </Row>

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Form, Input, Button, Icon, Modal, Select, message, InputNumber, Radio} from 'antd';
 import $ from '../../ajax';
+import _ from 'lodash';
 export default class OuterModal extends Component {
   constructor(props) {
     super(props);
@@ -36,6 +37,12 @@ export default class OuterModal extends Component {
     })
   }
   okAction() {
+    const valid = this.validAction();
+    if(!valid) {
+      return;
+    }
+
+    return;
     if(this.props.id) {
       $.put(`/outer/${this.props.id}`, this.state.fields).then(res => {
         if(res.code === 0) {
@@ -56,6 +63,19 @@ export default class OuterModal extends Component {
       })
     }
   }
+
+  validAction() {
+    const findFruit = _.find(this.state.fruits, v => v._id === this.state.fields.fruit);
+    console.log(findFruit)
+    if(findFruit) {
+      if(findFruit.total < this.state.fields.count) {
+        message.error('超出库存限制!')
+        return false;
+      }
+    }
+    return true;
+  }
+
   detailAction() {
     $.get(`/outer/${this.props.id}`).then(res => {
       if(res.code === 0) {

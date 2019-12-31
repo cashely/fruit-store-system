@@ -23,17 +23,13 @@ export default class Chart extends React.Component {
       //     type:'value',
       //     splitNumber:24
       // },
+      tooltip: {
+        trigger: 'axis'
+      },
       legend: {
-          orient: 'vertical',
+          // orient: 'vertical',
           right: 10,
-          data: this.props.dataSource.map(fruit => fruit.title),
-          selected: (() => {
-            let _s = {};
-            this.props.dataSource.map(fruit => {
-              _s[fruit.title] = fruit.total > 0
-            });
-            return _s;
-          })(),
+          type: 'scroll'
       },
       // series:[
       //   Object.keys(groupDataByFruits).map(key => ({
@@ -49,18 +45,12 @@ export default class Chart extends React.Component {
           type: 'value',
           scale: false
       },
-      series: [
-          {
-              name:'邮件营销',
-              type:'line',
-              data:[['2014-12-01', 600],['2015-01-02', 300],['2015-01-04', 100]]
-          },
-          {
-              name:'邮件营2销',
-              type:'line',
-              data:[['2014-12-01', '100'],['2015-01-02', '200'],['2015-01-03', '400']]
-          }
-      ]
+      series:
+          Object.keys(groupDataByFruits).map(key => ({
+            name: _.find(this.props.fruits, {_id: key}) ? _.find(this.props.fruits, {_id: key}).title : '',
+            type: 'line',
+            data: Object.keys(groupDataByFruits[key]).map(timeKey => ([timeKey, _.sumBy(groupDataByFruits[key][timeKey], 'count')]))
+          }))
     }
     console.log(options, 'options')
     return (

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DatePicker, Layout, Pagination, Table, Tag, Progress, Button, Icon, Upload } from 'antd';
+import { DatePicker, Layout, Pagination, Table, Tag, Progress, Button, Icon, Upload, Form } from 'antd';
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
@@ -11,9 +11,14 @@ export default class Inner extends Component {
     this.state = {
       inners: [],
       total: 0,
+      page: 1,
+      limit: 2,
       id: null,
       visible: {
         inner: false
+      },
+      conditions: {
+        date: []
       }
     }
   }
@@ -24,6 +29,16 @@ export default class Inner extends Component {
       visible,
       id: null
     })
+  }
+
+  conditionsChangeAction(e, field, type) {
+    let value;
+    switch(type) {
+      default: value = e;
+    }
+    this.setState({
+      conditions: Object.assign({}, this.state.conditions, {[field]: value})
+    });
   }
 
   openModelAction(modelName, id = null) {
@@ -41,13 +56,36 @@ export default class Inner extends Component {
   }
 
   listAction() {
-    $.get('/inners').then(res => {
+    $.get('/inners', {page: this.state.page, limit: this.state.limit, ...this.state.conditions}).then(res => {
       if(res.code === 0) {
+        this.countListAction();
         this.setState({
           inners: res.data
         })
       }
     })
+  }
+
+  countListAction() {
+    $.get('/outers/total', this.state.conditions).then(res => {
+      if(res.code === 0) {
+        this.setState({
+          total: res.data
+        })
+      }
+    })
+  }
+
+  pageChangeAction(page, pageSize) {
+    this.setState({
+      page
+    }, this.listAction);
+  }
+
+  searchAction() {
+    this.setState({
+      page: 1
+    }, this.listAction);
   }
 
   componentWillMount() {
@@ -128,7 +166,17 @@ export default class Inner extends Component {
     return (
       <Layout style={{height: '100%', backgroundColor: '#fff', display: 'flex'}}>
         <Header style={{backgroundColor: '#fff', padding: 10, height: 'auto', lineHeight: 1}}>
-          <Button type="primary" onClick={this.openModelAction.bind(this, 'inner', null)}><Icon type="download"/>入库</Button>
+          <Form layout="inline">
+            <Form.Item>
+                <Button type="primary" onClick={this.openModelAction.bind(this, 'inner', null)}><Icon type="download"/>入库</Button>
+            </Form.Item>
+            <Form.Item label="时间">
+              <DatePicker.RangePicker format="YYYY-MM-DD" value={this.state.conditions.date} onChange={e => this.conditionsChangeAction(e, 'date', 'DATE')} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" onClick={this.searchAction.bind(this)}>搜索</Button>
+            </Form.Item>
+          </Form>
         </Header>
         <Content style={{overflow: 'auto'}}>
           <Table rowKey="_id" onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.inners} size="middle" bordered pagination={false}/>
@@ -137,7 +185,7 @@ export default class Inner extends Component {
           }
         </Content>
         <Footer style={{padding: 5, backgroundColor: '#fff'}}>
-          <Pagination defaultCurrent={1} total={this.state.total}/>
+          <Pagination defaultCurrent={1} total={this.state.total} pageSize={this.state.limit} current={this.state.page} onChange={this.pageChangeAction.bind(this)}/>
         </Footer>
       </Layout>
     )

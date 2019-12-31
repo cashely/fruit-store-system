@@ -1,14 +1,23 @@
 const models = require('../model.js');
 const _ = require('lodash');
+const moment = require('moment');
 module.exports = {
   list(req, res) {
-    let conditions = { type: 2 }
-    if(req.createdAt) {
-      conditions.createdAt = { $gte: moment(req.createdAt).format('YYYY-MM-DD')}
+    const { page = 1, limit = 20, date = [] } = req.query;
+    let formatDate = date.map(item => {
+      return moment(JSON.parse(item)).format('YYYY-MM-DD');
+    });
+    let conditions = { type: 2 };
+    if(formatDate[0]) {
+      conditions.createdAt = { $gte: formatDate[0]}
+      if(formatDate[1]) {
+        conditions.createdAt = { $gte: formatDate[0], $lte: formatDate[1]}
+      }
     }
-    const orders = models.orders.find(conditions).populate('creater').populate('fruit').populate('pusher').sort({_id: -1}).then(orders => {
+    const orders = models.orders.find(conditions).populate('creater').populate('fruit').populate('pusher').sort({_id: -1}).skip((+page - 1) * limit).limit(+limit).then(orders => {
       req.response(200, orders)
     }).catch(err => {
+      console.log(err)
       req.response(500, err);
     })
   },
@@ -79,10 +88,19 @@ module.exports = {
     })
   },
   total(req, res) {
-    const q = req.query;
-    let conditions = {};
-    if(q._k) {
-      conditions.acount = new RegExp(q._k);
+    const { page = 1, limit = 20, date = [] } = req.query;
+    let formatDate = date.map(item => {
+      return moment(JSON.parse(item)).format('YYYY-MM-DD');
+    });
+    let conditions = { type: 2 };
+    if(formatDate[0]) {
+      conditions.createdAt = { $gte: formatDate[0]}
+    }
+    if(formatDate[1]) {
+      conditions.createdAt = { $lte: formatDate[1]}
+      if(formatDate[1]) {
+        conditions.createdAt = { $gte: formatDate[0], $lte: formatDate[1]}
+      }
     }
     models.orders.countDocuments(conditions).then(count => {
       req.response(200, count);

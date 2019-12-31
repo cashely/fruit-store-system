@@ -24,19 +24,23 @@ module.exports = {
       })
     }else if(statu === 530) {
       res.status(statu).json(data)
+    }else if(statu) {
+      res.status(statu).json(data)
     }else {
       res.sendStatus(500)
     }
   },
   responseMiddleware(req, res, next) {
-    req.response = (statu, data) => {
+    req.response = (statu, data, code = 0) => {
       if(statu === 200) {
         res.json({
-          code: 0,
+          code,
           data: data
         })
       }else if(statu === 530) {
         res.status(statu).json(data)
+      }else if(statu) {
+        res.sendStatus(statu)
       }else {
         res.sendStatus(500)
       }

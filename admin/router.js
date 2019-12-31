@@ -21,16 +21,26 @@ module.exports = (app) => {
     console.log(req.response)
     res.json({test: req.isAuthenticated(), uid: req.user, session: req.session, password: getSha1('root')})
   })
-  .get('/login/:acount/:password', (req, res, next) => {
-    console.log(req.params.acount, req.params.password)
-    if(req.params.acount === 'root' && req.params.password === 'root') {
+  .post('/login', (req, res, next) => {
+    // console.log(req.query.acount, req.query.password)
+    const {acount, password} = req.body;
+    if(acount && password) {
       req.body = {
-        acount: 'root',
-        password: getSha1('root')
+        acount,
+        password: getSha1(password)
       }
-      passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/login'
+      passport.authenticate('local', (a, b, c) => {
+        if(b) {
+          req.logIn(b, (err) => {
+            if(!err) {
+              req.response(200, b)
+            }else {
+              req.response(200, "写入session失败" , 1)
+            }
+          })
+        } else {
+          req.response(200, c.message, 1)
+        }
       })(req, res, next)
     }else {
       res.send('error')
@@ -83,7 +93,7 @@ module.exports = (app) => {
   .get('/orders', routes.order.list)
   .get('/orders/total', routes.order.total)
 
-
+  .get('/excel/:filename', routes.order.excel)
 
 
   .get('/units', routes.other.units)
