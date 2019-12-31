@@ -12,7 +12,7 @@ export default class Inner extends Component {
       inners: [],
       total: 0,
       page: 1,
-      limit: 2,
+      limit: 20,
       id: null,
       visible: {
         inner: false

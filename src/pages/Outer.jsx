@@ -12,7 +12,7 @@ export default class Outer extends Component {
       outers: [],
       total: 0,
       page: 1,
-      limit: 2,
+      limit: 20,
       id: null,
       visible: {
         outer: false

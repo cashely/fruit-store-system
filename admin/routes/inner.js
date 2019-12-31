@@ -9,7 +9,7 @@ module.exports = {
     if(formatDate[0]) {
       conditions.createdAt = { $gte: formatDate[0]}
       if(formatDate[1]) {
-        conditions.createdAt = { $gte: formatDate[0], $lte: formatDate[1]}
+        conditions.createdAt = { $gte: formatDate[0], $lte: moment(formatDate[1]).add(1, 'days').format('YYYY-MM-DD')}
       }
     }
     const orders = models.orders.find(conditions).populate('creater').populate('fruit').populate('puller').sort({_id: -1}).skip((+page - 1) * limit).limit(+limit).then(orders => {

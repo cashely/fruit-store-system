@@ -41,8 +41,6 @@ export default class OuterModal extends Component {
     if(!valid) {
       return;
     }
-
-    return;
     if(this.props.id) {
       $.put(`/outer/${this.props.id}`, this.state.fields).then(res => {
         if(res.code === 0) {

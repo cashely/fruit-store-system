@@ -6,6 +6,7 @@ import _ from 'lodash';
 import GroupModal from '../components/GroupModal';
 import PieChart from '../components/PieChart';
 import LineChart from '../components/LineChart';
+import ExportModal from '../components/models/ExportModal';
 
 export default class Home extends Component {
   constructor(props) {
@@ -16,7 +17,10 @@ export default class Home extends Component {
       total: 0,
       gid: null,
       groupVisable: false,
-      outersMonth: []
+      outersMonth: [],
+      visible: {
+        export: false
+      }
     }
   }
   rowClickAction(id) {
@@ -37,6 +41,22 @@ export default class Home extends Component {
     this.setState({
       gid,
       groupVisable: true
+    })
+  }
+
+  showExportModalAction() {
+    this.setState({
+      visible: {
+        export: true
+      }
+    })
+  }
+
+  hideExportModalAction() {
+    this.setState({
+      visible: {
+        export: false
+      }
     })
   }
 
@@ -167,13 +187,14 @@ export default class Home extends Component {
                     <Layout style={{marginTop: 10, backgroundColor: '#fff'}}>
                       <Header style={{backgroundColor: '#fff', padding: 10, height: 'auto', lineHeight: 1}}>
                         <Button type="primary" disabled onClick={this.showGroupAction.bind(this)}><Icon type="download"/>新增库存</Button>
-                        <Button type="primary" style={{marginLeft: 10}} disabled><Icon type="download"/>导出报告</Button>
+                        <Button type="primary" style={{marginLeft: 10}} onClick={this.showExportModalAction.bind(this)}><Icon type="download"/>导出报告</Button>
                       </Header>
                       <Content style={{overflow: 'auto'}}>
                         <Table rowKey="_id" columns={columns} dataSource={this.state.orders} size="middle" bordered pagination={false}/>
                         {
                           this.state.groupVisable ? <GroupModal gid={this.state.gid} visible={this.state.groupVisable} onOk={this.groupOkAction.bind(this)} onCancel={this.hideGroupAction.bind(this)}/> : null
                         }
+                        <ExportModal visible={this.state.visible.export} onOk={this.hideExportModalAction.bind(this)}/>
                       </Content>
                       <Footer style={{padding: 5, backgroundColor: '#fff'}}>
                         <Pagination defaultCurrent={1} total={this.state.total}/>
