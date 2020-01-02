@@ -26,7 +26,7 @@ export default class ExportModal extends Component {
     if(!valid) {
       return;
     }
-    window.open(`//${location.hostname}:6010/excel/${this.state.fields.date.map(d => moment(d).format('YYYY-MM-DD')).join('_')}.xls`);
+    window.open(`//${window.location.hostname}:6010/excel/${this.state.fields.date.map(d => moment(d).format('YYYY-MM-DD')).join('_')}.xls`);
     this.props.onOk();
   }
 

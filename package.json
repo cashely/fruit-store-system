@@ -76,7 +76,7 @@
     "workbox-webpack-plugin": "4.3.1"
   },
   "scripts": {
-    "start": "PORT=6009 node scripts/start.js",
+    "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"
   },
@@ -148,5 +148,6 @@
       "react-app"
     ]
   },
-  "proxy": "http://localhost:6010"
+  "proxy": "http://localhost:6010",
+  "port": 6009
 }
