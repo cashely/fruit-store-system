@@ -80,6 +80,10 @@ export default class Outer extends Component {
         dataIndex: 'outerPrice'
       },
       {
+        title: '均价',
+        dataIndex: 'avgPrice'
+      },
+      {
         title: '创建时间',
         dataIndex: 'createdAt',
         render: d => m(d).format('YYYY-MM-DD')

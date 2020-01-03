@@ -11,6 +11,8 @@ export default class Outer extends Component {
     this.state = {
       pullers: [],
       total: 0,
+      page: 1,
+      limit: 20,
       id: null,
       visible: {
         puller: false
@@ -42,13 +44,30 @@ export default class Outer extends Component {
   }
 
   listAction() {
-    $.get('/pullers').then(res => {
+    $.get('/pullers', {page: this.state.page, limit: this.state.limit, ...this.state.conditions}).then(res => {
       if(res.code === 0) {
+        this.countListAction();
         this.setState({
           pullers: res.data
         })
       }
     })
+  }
+
+  countListAction() {
+    $.get('/pullers/total', this.state.conditions).then(res => {
+      if(res.code === 0) {
+        this.setState({
+          total: res.data
+        })
+      }
+    })
+  }
+
+  pageChangeAction(page, pageSize) {
+    this.setState({
+      page
+    }, this.listAction);
   }
 
   componentWillMount() {
@@ -101,7 +120,7 @@ export default class Outer extends Component {
             }
         </Content>
         <Footer style={{padding: 5, backgroundColor: '#fff'}}>
-          <Pagination defaultCurrent={1} total={this.state.total}/>
+          <Pagination defaultCurrent={1} total={this.state.total} pageSize={this.state.limit} current={this.state.page} onChange={this.pageChangeAction.bind(this)}/>
         </Footer>
       </Layout>
     )

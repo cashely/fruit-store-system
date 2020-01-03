@@ -22,13 +22,18 @@ module.exports = {
     })
   },
   add(req, res) {
-    let {fruit, pusher, price, payStatu, count, payNumber, outerUnit, outerCount} = req.body;
+    let {fruit, pusher, price, payStatu, count, payNumber, outerUnit, outerCount, avgPrice} = req.body;
+    // if(!avgPrice) {
+    //   avgPrice = price;
+    // }
+    // avgPrice = (+avgPrice + +price) / 2; // 计算平均价格
     let conditions = {
       type: 2,
       fruit,
       pusher,
       price,
       count,
+      avgPrice,
       creater: req.user
     };
     const $payTotal = price * count; // 应付款项

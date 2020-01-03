@@ -14,7 +14,8 @@ export default class OuterModal extends Component {
         pusher: '',
         outerUnit: '',
         outerCount: null,
-        payNumber: 0
+        payNumber: 0,
+        avgPrice: 0
       },
       maxCount: 0,
       pushers: [],
@@ -29,11 +30,17 @@ export default class OuterModal extends Component {
     }
   }
   changeAction(fieldname, e) {
-    console.log(e)
     if(!e) return;
     const fields = Object.assign({}, this.state.fields, {[fieldname]: typeof(e) === 'object' ? e.currentTarget.value : e})
     this.setState({
       fields
+    }, () => {
+      if(fieldname === 'fruit') {
+        const fruit = _.find(this.state.fruits, {_id: this.state.fields.fruit});
+        this.setState({
+          fields: Object.assign({}, this.state.fields, {avgPrice: fruit.avgPrice})
+        })
+      }
     })
   }
   okAction() {
@@ -153,7 +160,8 @@ export default class OuterModal extends Component {
           </Item>
           <Item label="价格">
             <Input prefix="￥" suffix="元" style={{width: 250}} value={this.state.fields.price} onChange={(e) => this.changeAction('price', e)} />
-          </Item>
+            <span className="ant-form-text">(成本均价: {this.state.fields.avgPrice})</span>
+        </Item>
           <Item label="出货方">
             <Select value={this.state.fields.pusher} onChange={(e) => this.changeAction('pusher', e)}>
               {

@@ -116,6 +116,16 @@ export default class Outer extends Component {
         dataIndex: 'price'
       },
       {
+        title: '成本均价',
+        dataIndex: 'avgPrice'
+      },
+      {
+        title: '利润',
+        render:(d) => {
+          return (d.price - d.avgPrice) * d.count
+        }
+      },
+      {
         title: '出库人员',
         dataIndex: 'creater',
         render: d => d && d.acount

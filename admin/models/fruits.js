@@ -17,6 +17,10 @@ const Fruits = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  avgPrice: {
+    type: Number,
+    default: 0,
+  },
   unit: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'units'

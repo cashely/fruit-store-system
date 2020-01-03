@@ -2,20 +2,13 @@ const models = require('../model.js');
 const {response} = require('../functions/helper.js');
 module.exports = {
   list(req, res, next) {
+    const { page = 1, limit = 20 } = req.query;
     const q = req.query;
     let conditions = {};
-    let limit = 20;
-    let skip = 0;
-    if(q.offset) {
-      skip = +q.offset;
-    }
-    if(q.limit) {
-      limit = +q.limit
-    }
     if(q._k) {
       conditions.acount = new RegExp(q._k);
     }
-    models.users.find(conditions).limit(limit).skip(skip).sort({updatedAt: -1})
+    models.users.find(conditions).limit(limit).sort({updatedAt: -1}).skip((+page - 1) * limit).limit(+limit)
     .then(users => {
       response(200, users, res)
     }).catch(error => {

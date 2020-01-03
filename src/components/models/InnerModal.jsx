@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Form, Input, Button, Icon, Modal, Select, message, Radio} from 'antd';
 import $ from '../../ajax';
+import _ from 'lodash';
 export default class InnerModal extends Component {
   constructor(props) {
     super(props);
@@ -11,7 +12,8 @@ export default class InnerModal extends Component {
         price: 0,
         payStatu: 1,
         puller: '',
-        payNumber: 0
+        payNumber: 0,
+        avgPrice: 0
       },
       pullers: [],
       fruits: [],
@@ -25,10 +27,16 @@ export default class InnerModal extends Component {
     }
   }
   changeAction(fieldname, e) {
-    console.log(e)
     const fields = Object.assign({}, this.state.fields, {[fieldname]: typeof(e) === 'object' ? e.currentTarget.value : e})
     this.setState({
       fields
+    }, () => {
+      if(fieldname === 'fruit') {
+        const fruit = _.find(this.state.fruits, {_id: this.state.fields.fruit});
+        this.setState({
+          fields: Object.assign({}, this.state.fields, {avgPrice: fruit.avgPrice})
+        })
+      }
     })
   }
   okAction() {
@@ -110,6 +118,7 @@ export default class InnerModal extends Component {
           </Item>
           <Item label="价格">
             <Input value={this.state.fields.price} style={{width: 250}} onChange={(e) => this.changeAction('price', e)} prefix="￥" suffix="元" />
+            仓库均价: ￥{this.state.fields.avgPrice} 元/斤
           </Item>
           <Item label="供应商">
             <Select value={this.state.fields.puller} onChange={(e) => this.changeAction('puller', e)}>

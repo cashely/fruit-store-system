@@ -1,8 +1,9 @@
 const models = require('../model.js');
 module.exports = {
   list(req, res) {
+    const { page = 1, limit = 20 } = req.query;
     const conditions = {}
-    models.fruits.find(conditions).populate('creater').then(fruits => {
+    models.fruits.find(conditions).populate('creater').skip((+page - 1) * limit).limit(+limit).then(fruits => {
       req.response(200, fruits)
     }).catch(err => {
       req.response(500, err);

@@ -124,6 +124,10 @@ export default class Home extends Component {
         dataIndex: 'fruit.total',
       },
       {
+        title: '成本均价',
+        dataIndex: 'avgPrice'
+      },
+      {
         title: '类型',
         dataIndex: 'type',
         render: d => {

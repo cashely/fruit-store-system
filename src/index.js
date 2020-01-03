@@ -111,7 +111,7 @@ function Global(props) {
             display: 'flex',
             height: '100vh'
           }}>
-          <Content style={{padding: 10}}>
+          <Content>
             <Switch>
               <Route component={Index} path="/index" />
               <Route exact path="/" component={Login} />

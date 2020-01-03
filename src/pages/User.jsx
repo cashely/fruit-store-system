@@ -10,6 +10,7 @@ import {
   Icon,
   Popconfirm
 } from 'antd';
+import moment from 'moment';
 import $ from '../ajax';
 import UserModal from '../components/UserModal';
 export default class User extends Component {
@@ -19,6 +20,9 @@ export default class User extends Component {
       userVisiable: false,
       users: [],
       uid: null,
+      total: 0,
+      page: 1,
+      limit: 20,
       // caseAble: false
     }
     // this.userDeleteAction = this.userDeleteAction.bind(this)
@@ -32,10 +36,28 @@ export default class User extends Component {
   }
 
   usersAction() {
-    $.get('/users').then(res => {
+    $.get('/users', { page: this.state.page, limit: this.state.limit }).then(res => {
+      this.countListAction();
       this.setState({users: res.data})
     })
   }
+
+  countListAction() {
+    $.get('/users/total', this.state.conditions).then(res => {
+      if(res.code === 0) {
+        this.setState({
+          total: res.data
+        })
+      }
+    })
+  }
+
+  pageChangeAction(page, pageSize) {
+    this.setState({
+      page
+    }, this.usersAction);
+  }
+
   userDeleteAction(uid) {
     $.delete(`/user/${uid}`).then(res => {
       if(res.data === 'ok') {
@@ -97,7 +119,8 @@ export default class User extends Component {
             }</Tag>
       }, {
         title: '创建时间',
-        dataIndex: 'createdAt'
+        dataIndex: 'createdAt',
+        render: d => moment(d).format('YYYY-MM-DD HH:mm:ss')
       }, {
         title: '状态',
         dataIndex: 'statu',
@@ -145,7 +168,7 @@ export default class User extends Component {
           padding: 5,
           backgroundColor: '#fff'
         }}>
-        <Pagination defaultCurrent={1} total={50}/>
+        <Pagination defaultCurrent={1} total={this.state.total} pageSize={this.state.limit} current={this.state.page} onChange={this.pageChangeAction.bind(this)}/>
       </Footer>
     </Layout>)
   }

@@ -44,6 +44,10 @@ const Orders = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  avgPrice: { // 当前均价
+    type: Number,
+    default: 0
+  },
   statu: {
     type: Number,
     default: 1 // 1 - 正常
@@ -61,5 +65,15 @@ const Orders = new mongoose.Schema({
     updatedAt: 'updatedAt'
   }
 });
+Orders.virtual('profit').get(() => { // 收益量
+  return this.__profit;
+}).set(() => {
+  this.__profit = (this.price - this.avgPrice) * this.count;
+})
+
+
+Orders.set('toJSON', {
+    virtuals: true
+})
 
 module.exports = mongoose.model('orders', Orders);

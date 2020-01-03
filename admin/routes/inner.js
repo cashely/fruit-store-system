@@ -20,13 +20,18 @@ module.exports = {
     })
   },
   add(req, res) {
-    let {fruit, puller, price, payStatu, count, payNumber} = req.body;
+    let {fruit, puller, price, payStatu, count, payNumber, avgPrice} = req.body;
+    if(!avgPrice) {
+      avgPrice = price;
+    }
+    avgPrice = (+avgPrice + +price) / 2; // 计算平均价格
     let conditions = {
       type: 1,
       fruit,
       puller,
       price,
       count,
+      avgPrice,
       creater: req.user
     };
     const $payTotal = price * count; // 应付款项
@@ -39,7 +44,7 @@ module.exports = {
     conditions.payNumber = payNumber;
     conditions.payTotal = $payTotal;
     new models.orders(conditions).save().then(() => {
-      const saveCountPromise = models.fruits.updateOne({_id: fruit}, {$inc: {total: count * 1}, innerPrice: price});
+      const saveCountPromise = models.fruits.updateOne({_id: fruit}, {$inc: {total: count * 1}, innerPrice: price, avgPrice});
       saveCountPromise.then((r) => {
         console.log(r)
         req.response(200, 'ok');

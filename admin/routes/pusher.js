@@ -1,8 +1,9 @@
 const models = require('../model.js');
 module.exports = {
   list(req, res) {
+    const { page = 1, limit = 20 } = req.query;
     const conditions = {}
-    models.pushers.find(conditions).populate('creater').sort({updatedAt: -1}).then(pushers => {
+    models.pushers.find(conditions).populate('creater').sort({updatedAt: -1}).skip((+page - 1) * limit).limit(+limit).then(pushers => {
       req.response(200, pushers)
     }).catch(err => {
       req.response(500, err);
