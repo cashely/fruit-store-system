@@ -55,6 +55,9 @@ function Index(props) {
                 <Item key="/index/outer">
                   <Link to="/index/outer"><Icon type="global"/> 出库管理</Link>
                 </Item>
+                <Item key="/index/outer">
+                  <Link to="/index/outer"><Icon type="global"/> 退货管理</Link>
+                </Item>
               </SubMenu>
               <Item key="/index/users">
                 <Link to="/index/users"><Icon type="setting"/> 设置</Link>

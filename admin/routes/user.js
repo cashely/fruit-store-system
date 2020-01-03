@@ -1,5 +1,6 @@
 const models = require('../model.js');
 const {response} = require('../functions/helper.js');
+const {getSha1} = require('../functions/helper.js');
 module.exports = {
   list(req, res, next) {
     const { page = 1, limit = 20 } = req.query;
@@ -42,7 +43,7 @@ module.exports = {
       conditions.acount = q.acount;
     }
     if(q.password) {
-      conditions.password = q.password;
+      conditions.password = getSha1(q.password);
     }
     if(q.mark) {
       conditions.mark = q.mark;
