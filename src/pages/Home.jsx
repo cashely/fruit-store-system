@@ -15,6 +15,8 @@ export default class Home extends Component {
       orders: [],
       fruits: [],
       total: 0,
+      page: 1,
+      limit: 20,
       gid: null,
       groupVisable: false,
       outersMonth: [],
@@ -81,6 +83,12 @@ export default class Home extends Component {
         })
       }
     })
+  }
+
+  pageChangeAction(page, pageSize) {
+    this.setState({
+      page
+    }, this.ordersAction);
   }
 
   groupOkAction(group) {
@@ -201,7 +209,7 @@ export default class Home extends Component {
                         <ExportModal visible={this.state.visible.export} onOk={this.hideExportModalAction.bind(this)}/>
                       </Content>
                       <Footer style={{padding: 5, backgroundColor: '#fff'}}>
-                        <Pagination defaultCurrent={1} total={this.state.total}/>
+                        <Pagination defaultCurrent={1} total={this.state.total} pageSize={this.state.limit} current={this.state.page} onChange={this.pageChangeAction.bind(this)}/>
                       </Footer>
                     </Layout>
                   </Col>
