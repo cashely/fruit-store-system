@@ -69,7 +69,7 @@ module.exports = {
       conditions.acount = q.acount;
     }
     if(q.password) {
-      conditions.password = q.password;
+      conditions.password = getSha1(q.password);
     }
     if(q.email) {
       conditions.email = q.email;
