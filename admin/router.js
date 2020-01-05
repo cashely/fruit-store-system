@@ -100,4 +100,8 @@ module.exports = (app) => {
 
 
   .post('/upload', routes.upload)
+
+
+  .get('/qrCode', routes.other.qrCode)
+  .get('/qrRedirect', routes.other.qrRedirect)
 }

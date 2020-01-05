@@ -24,6 +24,7 @@
     "node-xlsx": "^0.15.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
+    "qrcode": "^1.4.4",
     "xlsx": "^0.15.4"
   }
 }
