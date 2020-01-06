@@ -10,6 +10,7 @@ export default class FruitModel extends Component {
         unit: '',
         min: 1000, // 仓库最小报警数量
         warn: 2,
+        total: 0,
         mark: ''
       },
       units:[]
@@ -84,6 +85,9 @@ export default class FruitModel extends Component {
                 this.state.units.map(unit => <Option value={unit._id} key={unit._id} >{unit.title}</Option>)
               }
             </Select>
+          </Item>
+          <Item label="存量">
+            <Input value={this.state.fields.total} onChange={(e) => this.changeAction('total', e)} />
           </Item>
           <Item label="仓库最小储存量">
             <Input value={this.state.fields.min} onChange={(e) => this.changeAction('min', e)} />

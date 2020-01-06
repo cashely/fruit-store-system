@@ -34,7 +34,7 @@ module.exports = {
       price,
       count,
       avgPrice,
-      creater: req.user
+      creater: req.user.uid
     };
     const $payTotal = price * count; // 应付款项
     if(payStatu === 2) {
@@ -84,7 +84,7 @@ module.exports = {
     const conditions = {
       title,
       unit,
-      creater: req.user
+      creater: req.user.uid
     };
     models.orders.updateOne({_id: id}, conditions).then(() => {
       req.response(200, 'ok');

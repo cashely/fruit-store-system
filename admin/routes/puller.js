@@ -15,7 +15,7 @@ module.exports = {
       title,
       statu,
       contact, address, tel,
-      creater: req.user
+      creater: req.user.uid
     };
     new models.pullers(conditions).save().then(() => {
       req.response(200, 'ok');
@@ -46,7 +46,7 @@ module.exports = {
       title,
       statu,
       contact, address, tel,
-      creater: req.user
+      creater: req.user.uid
     };
     models.pullers.findOneAndUpdate({_id: id}, conditions).then(() => {
       req.response(200, 'ok');

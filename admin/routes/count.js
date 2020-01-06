@@ -12,7 +12,7 @@ module.exports = {
     const {title} = req.body;
     const conditions = {
       title,
-      creater: req.user
+      creater: req.user.uid
     };
     new models.counts(conditions).save().then(() => {
       req.response(200, 'ok');

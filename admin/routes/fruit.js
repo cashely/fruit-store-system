@@ -2,6 +2,7 @@ const models = require('../model.js');
 module.exports = {
   list(req, res) {
     const { page = 1, limit = 20 } = req.query;
+    console.log(req.user, 'user', req.logOut)
     const conditions = {}
     models.fruits.find(conditions).populate('creater').skip((+page - 1) * limit).limit(+limit).then(fruits => {
       req.response(200, fruits)
@@ -10,16 +11,18 @@ module.exports = {
     })
   },
   add(req, res) {
-    const {title, unit, warn, min} = req.body;
+    const {title, unit, warn, min, total = 0} = req.body;
     const conditions = {
       title,
       unit,
+      total: +total,
       warn, min,
-      creater: req.user
+      creater: req.user.uid
     };
     new models.fruits(conditions).save().then(() => {
       req.response(200, 'ok');
     }).catch(err => {
+      console.log(err)
       req.response(500, err);
     })
   },
@@ -41,13 +44,14 @@ module.exports = {
   },
   update(req, res) {
     const id = req.params.id;
-    const {title, unit, warn, min} = req.body;
+    const {title, unit, warn, min, total = 0} = req.body;
     const conditions = {
       title,
       unit,
       warn,
+      total: +total,
       min: +min,
-      creater: req.user
+      creater: req.user.uid
     };
     console.log(conditions, id)
     models.fruits.findOneAndUpdate({_id: id}, conditions).then(() => {

@@ -5,12 +5,12 @@ const passport = require('passport');
 
 module.exports = () => {
   passport.serializeUser(function (user, cb) {
-    cb(null, user._id)
+    cb(null, {uid: user._id, role: user.role})
   })
 
-  passport.deserializeUser(function (id, cb) {
-    console.log(id)
-    cb(null, id)
+  passport.deserializeUser(function (user, cb) {
+    // console.log(id)
+    cb(null, user)
     // models.users.findById(id).then(user => {
     //   cb(null, user);
     // }).catch(err => {
