@@ -95,7 +95,7 @@ export default class Outer extends Component {
         render: row => (
           <React.Fragment>
             <Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('fruit', row._id)}} size="small"><Icon type="edit"/></Button>
-            <Button style={{marginLeft: 10}} type="danger" size="small"><Icon type="delete"/></Button>
+            // <Button style={{marginLeft: 10}} type="danger" size="small"><Icon type="delete"/></Button>
           </React.Fragment>
         )
       }
