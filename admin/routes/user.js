@@ -98,5 +98,12 @@ module.exports = {
     }).catch(error => {
       response(500, error, res);
     })
+  },
+  me(req, res, next) {
+    models.users.findById(req.user.uid).select('-password').then(user => {
+      req.response(200, user)
+    }).catch(error => {
+      req.response(500, error);
+    })
   }
 }

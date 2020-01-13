@@ -52,6 +52,7 @@ module.exports = (app) => {
   .delete('/user/:id', routes.user.delete)
   .get('/user/:id', routes.user.detail)
   .put('/user/:id', routes.user.update)
+  .get('/me', routes.user.me)
 
   .post('/fruit', authenticationMiddleware(), routes.fruit.add)
   .get('/fruits', routes.fruit.list)
@@ -88,6 +89,21 @@ module.exports = (app) => {
   .get('/inner/:id', authenticationMiddleware(), routes.inner.detail)
   .put('/inner/:id', authenticationMiddleware(), routes.inner.update)
 
+
+  .post('/costCategory', authenticationMiddleware(), routes.costCategory.add)
+  .get('/costCategorys', routes.costCategory.list)
+  .get('/costCategorys/total', authenticationMiddleware(), routes.costCategory.total)
+  .delete('/costCategory/:id', authenticationMiddleware(), routes.costCategory.delete)
+  .get('/costCategory/:id', authenticationMiddleware(), routes.costCategory.detail)
+  .put('/costCategory/:id', authenticationMiddleware(), routes.costCategory.update)
+
+  .post('/costDetail', routes.costDetail.add)
+  .get('/costDetails', routes.costDetail.list)
+  .get('/costDetails/total', authenticationMiddleware(), routes.costDetail.total)
+  .delete('/costDetail/:id', authenticationMiddleware(), routes.costDetail.delete)
+  .get('/costDetail/:id', authenticationMiddleware(), routes.costDetail.detail)
+  .put('/costDetail/:id', authenticationMiddleware(), routes.costDetail.update)
+
   .get('/count/:fruit', authenticationMiddleware(), routes.count.detail)
 
   .get('/orders', routes.order.list)
@@ -104,4 +120,9 @@ module.exports = (app) => {
 
   .get('/qrCode', routes.other.qrCode)
   .get('/qrRedirect', routes.other.qrRedirect)
+
+  .post('/logout', (req, res) => {
+    req.logOut();
+    req.response(200, 'ok');
+  })
 }
