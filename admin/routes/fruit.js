@@ -36,9 +36,10 @@ module.exports = {
   },
   delete(req, res) {
     const {id} = req.params;
-    models.fruits.deleteById(id).then(() => {
+    models.fruits.deleteOne({_id: id}).then(() => {
       req.response(200, 'ok');
     }).catch(err => {
+      console.log(err)
       req.response(500, err);
     })
   },
