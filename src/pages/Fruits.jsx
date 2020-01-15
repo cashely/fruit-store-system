@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DatePicker, Layout, Pagination, Table, Tag, Progress, Button, Icon, Upload } from 'antd';
+import { DatePicker, Layout, Pagination, Table, Tag, Progress, Button, Icon, Upload, Popconfirm } from 'antd';
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
@@ -51,6 +51,15 @@ export default class Outer extends Component {
     })
   }
 
+  deleteAction(id) {
+    $.delete(`/fruit/${id}`).then(res => {
+      if(res.code === 0) {
+        message.success('操作成功');
+        this.listAction();
+      }
+    })
+  }
+
   componentWillMount() {
     this.listAction();
   }
@@ -95,7 +104,14 @@ export default class Outer extends Component {
         render: row => (
           <React.Fragment>
             <Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('fruit', row._id)}} size="small"><Icon type="edit"/></Button>
-            // <Button style={{marginLeft: 10}} type="danger" size="small"><Icon type="delete"/></Button>
+              <Popconfirm
+                title="您确定要删除?"
+                onConfirm={this.deleteAction.bind(this, row._id)}
+                okText="是"
+                cancelText="否"
+              >
+                <Button style={{marginLeft: 10}} type="danger" size="small"><Icon type="delete"/></Button>
+              </Popconfirm>
           </React.Fragment>
         )
       }

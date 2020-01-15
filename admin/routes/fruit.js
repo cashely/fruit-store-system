@@ -35,7 +35,7 @@ module.exports = {
     })
   },
   delete(req, res) {
-    const {id} = req.params.id;
+    const {id} = req.params;
     models.fruits.deleteById(id).then(() => {
       req.response(200, 'ok');
     }).catch(err => {
