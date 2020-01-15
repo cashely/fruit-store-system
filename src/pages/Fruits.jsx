@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DatePicker, Layout, Pagination, Table, Tag, Progress, Button, Icon, Upload, Popconfirm } from 'antd';
+import { DatePicker, Layout, Pagination, Table, Tag, Progress, Button, Icon, Upload, Popconfirm, message } from 'antd';
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
