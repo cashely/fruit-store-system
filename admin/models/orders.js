@@ -28,6 +28,10 @@ const Orders = new mongoose.Schema({
   outerCount: {
     type: Number // 出库单位数量
   },
+  reserve: {
+    type: Number, // 预下单数量
+    default: 0
+  },
   pusher: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'pushers'

@@ -15,7 +15,8 @@ export default class OuterModal extends Component {
         outerUnit: '',
         outerCount: null,
         payNumber: 0,
-        avgPrice: 0
+        avgPrice: 0,
+        reserve: 0,
       },
       maxCount: 0,
       pushers: [],
@@ -146,7 +147,10 @@ export default class OuterModal extends Component {
               }
             </Select>
           </Item>
-          <Item label="数量">
+          <Item label="下单数量">
+            <Input value={this.state.fields.reserve} onChange={(e) => {this.changeAction('reserve', e)}} style={{width: 250}} suffix="斤" />
+          </Item>
+          <Item label="出库数量">
             <Input disabled={isEdit} value={this.state.fields.count} max={fruit.length && fruit[0].total} onChange={(e) => {this.changeAction('count', e)}} style={{width: 250}} suffix="斤" />
             <span className="ant-form-text">(库存数量: {fruit.length && fruit[0].total})</span>
           </Item>
@@ -158,7 +162,7 @@ export default class OuterModal extends Component {
               <Option value={3}>个</Option>
             </Select>
           </Item>
-          <Item label="价格">
+          <Item label="单价">
             <Input prefix="￥" suffix="元" style={{width: 250}} value={this.state.fields.price} onChange={(e) => this.changeAction('price', e)} />
             <span className="ant-form-text">(成本均价: {this.state.fields.avgPrice})</span>
         </Item>

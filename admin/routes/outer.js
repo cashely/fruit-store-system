@@ -22,7 +22,7 @@ module.exports = {
     })
   },
   add(req, res) {
-    let {fruit, pusher, price, payStatu, count, payNumber, outerUnit, outerCount, avgPrice} = req.body;
+    let {fruit, pusher, price, payStatu, count, payNumber, outerUnit, outerCount, avgPrice, reserve = 0} = req.body;
     // if(!avgPrice) {
     //   avgPrice = price;
     // }
@@ -34,6 +34,7 @@ module.exports = {
       price,
       count,
       avgPrice,
+      reserve,
       creater: req.user.uid
     };
     const $payTotal = price * count; // 应付款项
@@ -80,10 +81,11 @@ module.exports = {
   },
   update(req, res) {
     const {id} = req.params.id;
-    const {pusher, price, payStatu} = req.body;
+    const {pusher, price, payStatu, reserve} = req.body;
     const conditions = {
       title,
       unit,
+      reserve,
       creater: req.user.uid
     };
     models.orders.updateOne({_id: id}, conditions).then(() => {

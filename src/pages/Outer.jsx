@@ -120,6 +120,14 @@ export default class Outer extends Component {
         dataIndex: 'avgPrice'
       },
       {
+        title: '下单数量',
+        dataIndex: 'reserve'
+      },
+      {
+        title: '金额',
+        dataIndex: 'payTotal',
+      },
+      {
         title: '利润',
         render:(d) => {
           return (d.price - d.avgPrice) * d.count
@@ -162,7 +170,6 @@ export default class Outer extends Component {
         render: row => (
           <React.Fragment>
             <Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('outer',row._id)}} size="small"><Icon type="edit"/></Button>
-            // <Button style={{marginLeft: 10}} type="danger" size="small"><Icon type="delete"/></Button>
           </React.Fragment>
         )
       }
