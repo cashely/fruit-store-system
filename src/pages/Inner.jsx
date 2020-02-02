@@ -224,14 +224,14 @@ export default class Inner extends Component {
               <Input style={{width: 240}} value={this.state.conditions.id} onChange={e => this.conditionsChangeAction(e, 'id', 'input')} />
             </Form.Item>
             <Form.Item label="供应商">
-              <Select style={{width: 110}} allowClear placeholder="全部" value={this.state.conditions.puller} showSearch filterOption={(v,s) => s.props.children.includes(v)}  onChange={e => this.conditionsChangeAction(e, 'puller')}>
+              <Select style={{width: 110}} dropdownMatchSelectWidth={false} allowClear placeholder="全部" value={this.state.conditions.puller} showSearch filterOption={(v,s) => s.props.children.includes(v)}  onChange={e => this.conditionsChangeAction(e, 'puller')}>
                 {
                   this.state.pullers.map(puller => <Option value={puller._id} key={puller._id} >{puller.title}</Option>)
                 }
               </Select>
             </Form.Item>
             <Form.Item label="种类">
-              <Select style={{width: 100}} allowClear placeholder="全部" value={this.state.conditions.fruit} showSearch filterOption={(v,s) => s.props.children.includes(v)}  onChange={e => this.conditionsChangeAction(e, 'fruit')}>
+              <Select style={{width: 100}} dropdownMatchSelectWidth={false} allowClear placeholder="全部" value={this.state.conditions.fruit} showSearch filterOption={(v,s) => s.props.children.includes(v)}  onChange={e => this.conditionsChangeAction(e, 'fruit')}>
                 {
                   this.state.fruits.map(fruit => <Option value={fruit._id} key={fruit._id} >{fruit.title}</Option>)
                 }
