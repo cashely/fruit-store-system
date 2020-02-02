@@ -1,8 +1,13 @@
 const models = require('../model.js');
 module.exports = {
   list(req, res) {
-    const { page = 1, limit = 20 } = req.query;
-    const conditions = {}
+    const { page = 1, limit = 20, title = '' } = req.query;
+    const conditions = {
+      $or: [
+        {title: new RegExp(title ,'ig')},
+        {contact: new RegExp(title, 'ig')}
+      ]
+    }
     models.pushers.find(conditions).populate('creater').sort({updatedAt: -1}).skip((+page - 1) * limit).limit(+limit).then(pushers => {
       req.response(200, pushers)
     }).catch(err => {
@@ -55,10 +60,12 @@ module.exports = {
     })
   },
   total(req, res) {
-    const q = req.query;
-    let conditions = {};
-    if(q._k) {
-      conditions.acount = new RegExp(q._k);
+    const { page = 1, limit = 20, title = '' } = req.query;
+    const conditions = {
+      $or: [
+        {title: new RegExp(title ,'ig')},
+        {contact: new RegExp(title, 'ig')}
+      ]
     }
     models.pushers.countDocuments(conditions).then(count => {
       req.response(200, count);

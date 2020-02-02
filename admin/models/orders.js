@@ -22,6 +22,18 @@ const Orders = new mongoose.Schema({
     type: Number, // 1 - 入库 2 - 出库 3 - 退货
     required: true
   },
+  unit: { // 规格
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'units'
+  },
+  unitCount: { // 规格数量
+    type: Number,
+    default: 0
+  },
+  packCount: { // 打包数量
+    type: Number,
+    default: 0
+  },
   outerUnit: { // 出库单位
     type: Number
   },

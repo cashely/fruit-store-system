@@ -14,6 +14,8 @@ import Pullers from './pages/Pullers';
 import Fruits from './pages/Fruits';
 import Login from './pages/Login';
 import Cost from './pages/Cost';
+import Units from './pages/Units';
+import Back from './pages/Back';
 import $ from './ajax';
 import * as serviceWorker from './serviceWorker';
 import zhCN from 'antd/es/locale/zh_CN';
@@ -106,6 +108,9 @@ function Index(props) {
               <Item key="/index/fruits">
                 <Link to="/index/fruits"><Icon type="setting"/> 水果种类管理</Link>
               </Item>
+              <Item key="/index/units">
+                <Link to="/index/units"><Icon type="setting"/> 规格</Link>
+              </Item>
               <Item key="/index/costs">
                 <Link to="/index/costs"><Icon type="setting"/> 成本管理</Link>
               </Item>
@@ -139,6 +144,8 @@ function Routes(props) {
         <Route exact path="/index/pullers" component={Pullers} />
         <Route exact path="/index/fruits" component={Fruits} />
         <Route exact path="/index/costs" component={Cost} />
+        <Route exact path="/index/units" component={Units} />
+        <Route exact path="/index/back" component={Back} />
       </Switch>
   )
 }

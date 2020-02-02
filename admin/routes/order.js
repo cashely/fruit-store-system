@@ -5,19 +5,66 @@ const fs = require('fs');
 const excel = require('../functions/excel');
 module.exports = {
   list(req, res) {
-    const { page = 1, limit = 20, date = [] } = req.query;
+    const { page = 1, limit = 20, date = [], type } = req.query;
     let formatDate = date.map(item => {
       return moment(JSON.parse(item)).format('YYYY-MM-DD');
     });
     let conditions = {};
+    if(!!+type) {
+      conditions.type = type
+    }
     if(formatDate[0]) {
       conditions.createdAt = { $gte: formatDate[0]}
       if(formatDate[1]) {
         conditions.createdAt = { $gte: formatDate[0], $lte: moment(formatDate[1]).add(1, 'days').format('YYYY-MM-DD')}
       }
     }
-    models.orders.find(conditions).populate('creater').populate('fruit').populate('pusher').populate('puller').sort({_id: -1}).skip((+page - 1) * limit).limit(+limit).then(orders => {
+    console.log(conditions)
+    models.orders.find(conditions).populate('creater').populate('fruit').populate('unit').populate('pusher').populate('puller').sort({_id: -1}).skip((+page - 1) * limit).limit(+limit).then(orders => {
       req.response(200, orders)
+    }).catch(err => {
+      req.response(500, err);
+    })
+  },
+  detail(req, res, next) {
+    const id = req.params.id;
+    models.orders.findById(id).populate('fruit').then(order => {
+      req.response(200, order);
+    }).catch(error => {
+      req.response(500, error);
+    })
+  },
+  back(req, res) {
+    const { count, type, fruit, _id } = req.body;
+    let total;
+    if(type === 1) {
+      total = count * -1
+    } else if(type === 2) {
+      total = count * 1
+    }
+    new models.backs({
+      order: _id,
+      count: count
+    }).save().then(() => {
+      const saveCountPromise = models.fruits.updateOne({_id: fruit._id}, {$inc: {total}});
+      saveCountPromise.then((r) => {
+        req.response(200, 'ok');
+      }).catch(err => {
+        console.log(err)
+        req.response(500, err);
+      })
+    }).catch(err => {
+      console.log(err)
+      req.response(500, err);
+    })
+  },
+  backs(req, res) {
+    const { order } = req.query;
+    let conditions = {
+      order
+    };
+    models.backs.find(conditions).sort({_id: -1}).then(backs => {
+      req.response(200, backs)
     }).catch(err => {
       req.response(500, err);
     })

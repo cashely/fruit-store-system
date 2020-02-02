@@ -5,22 +5,19 @@ module.exports = {
     const conditions = {
       title: new RegExp(title, 'ig')
     };
-    models.fruits.find(conditions).populate('creater').skip((+page - 1) * limit).limit(+limit).then(fruits => {
-      req.response(200, fruits)
+    models.units.find(conditions).populate('creater').skip((+page - 1) * limit).limit(+limit).then(units => {
+      req.response(200, units)
     }).catch(err => {
       req.response(500, err);
     })
   },
   add(req, res) {
-    const {title, unit, warn, min, total = 0} = req.body;
+    const {title} = req.body;
     const conditions = {
       title,
-      unit,
-      total: +total,
-      warn, min,
       creater: req.user.uid
     };
-    new models.fruits(conditions).save().then(() => {
+    new models.units(conditions).save().then(() => {
       req.response(200, 'ok');
     }).catch(err => {
       console.log(err)
@@ -29,7 +26,7 @@ module.exports = {
   },
   detail(req, res, next) {
     const id = req.params.id;
-    models.fruits.findById(id).then(fruit => {
+    models.units.findById(id).then(fruit => {
       req.response(200, fruit);
     }).catch(error => {
       req.response(500, error);
@@ -37,7 +34,7 @@ module.exports = {
   },
   delete(req, res) {
     const {id} = req.params;
-    models.fruits.deleteOne({_id: id}).then(() => {
+    models.units.deleteOne({_id: id}).then(() => {
       req.response(200, 'ok');
     }).catch(err => {
       console.log(err)
@@ -55,19 +52,19 @@ module.exports = {
       min: +min,
       creater: req.user.uid
     };
-    console.log(conditions, id)
-    models.fruits.findOneAndUpdate({_id: id}, conditions).then(() => {
+    models.units.findOneAndUpdate({_id: id}, conditions).then(() => {
       req.response(200, 'ok');
     }).catch(err => {
       req.response(500, err);
     })
   },
   total(req, res) {
-    const { page = 1, limit = 20, title = '' } = req.query;
-    const conditions = {
-      title: new RegExp(title, 'ig')
-    };
-    models.fruits.countDocuments(conditions).then(count => {
+    const q = req.query;
+    let conditions = {};
+    if(q._k) {
+      conditions.acount = new RegExp(q._k);
+    }
+    models.units.countDocuments(conditions).then(count => {
       req.response(200, count);
     }).catch(error => {
       req.response(500, error)

@@ -3,7 +3,7 @@ const _ = require('lodash');
 const moment = require('moment');
 module.exports = {
   list(req, res) {
-    const { page = 1, limit = 20, date = [] } = req.query;
+    const { page = 1, limit = 20, date = [], id } = req.query;
     let formatDate = date.map(item => {
       return moment(JSON.parse(item)).format('YYYY-MM-DD');
     });
@@ -14,7 +14,10 @@ module.exports = {
         conditions.createdAt = { $gte: formatDate[0], $lte: moment(formatDate[1]).add(1, 'days').format('YYYY-MM-DD')}
       }
     }
-    const orders = models.orders.find(conditions).populate('creater').populate('fruit').populate('pusher').sort({_id: -1}).skip((+page - 1) * limit).limit(+limit).then(orders => {
+    if(id) {
+      conditions._id = id;
+    }
+    const orders = models.orders.find(conditions).populate('creater').populate('unit').populate('fruit').populate('pusher').sort({_id: -1}).skip((+page - 1) * limit).limit(+limit).then(orders => {
       req.response(200, orders)
     }).catch(err => {
       console.log(err)
@@ -22,7 +25,7 @@ module.exports = {
     })
   },
   add(req, res) {
-    let {fruit, pusher, price, payStatu, count, payNumber, outerUnit, outerCount, avgPrice, reserve = 0} = req.body;
+    let {fruit, pusher, price, payStatu, count, payNumber, outerUnit, outerCount, avgPrice, reserve = 0, unit, unitCount, packCount} = req.body;
     // if(!avgPrice) {
     //   avgPrice = price;
     // }
@@ -34,6 +37,9 @@ module.exports = {
       price,
       count,
       avgPrice,
+      unitCount,
+      unit,
+      packCount,
       reserve,
       creater: req.user.uid
     };
@@ -130,7 +136,7 @@ module.exports = {
     })
   },
   //昨日出库数量
-  yesterday() {
+  yesterday(req, res) {
     const conditions = {}
     conditions.type = 2;
     conditions.createdAt = {

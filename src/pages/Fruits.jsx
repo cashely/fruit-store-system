@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DatePicker, Layout, Pagination, Table, Tag, Progress, Button, Icon, Upload, Popconfirm, message } from 'antd';
+import { DatePicker, Layout, Pagination, Form, Input, Table, Tag, Progress, Button, Icon, Upload, Popconfirm, message } from 'antd';
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
@@ -11,11 +11,27 @@ export default class Outer extends Component {
     this.state = {
       fruits: [],
       total: 0,
+      page: 1,
+      limit: 20,
       id: null,
       visible: {
         fruit: false
+      },
+      conditions: {
+        title: ''
       }
     }
+  }
+
+  conditionsChangeAction(e, field, type) {
+    let value;
+    switch(type) {
+      case 'input' : value = e.currentTarget.value; break;
+      default: value = e;
+    }
+    this.setState({
+      conditions: Object.assign({}, this.state.conditions, {[field]: value})
+    });
   }
 
   cancelModelAction(modelName) {
@@ -42,13 +58,36 @@ export default class Outer extends Component {
   }
 
   listAction() {
-    $.get('/fruits').then(res => {
+    $.get('/fruits', {page: this.state.page, limit: this.state.limit, ...this.state.conditions}).then(res => {
       if(res.code === 0) {
+        this.countListAction();
         this.setState({
           fruits: res.data
         })
       }
     })
+  }
+
+  countListAction() {
+    $.get('/fruits/total', this.state.conditions).then(res => {
+      if(res.code === 0) {
+        this.setState({
+          total: res.data
+        })
+      }
+    })
+  }
+
+  pageChangeAction(page, pageSize) {
+    this.setState({
+      page
+    }, this.listAction);
+  }
+
+  searchAction() {
+    this.setState({
+      page: 1
+    }, this.listAction);
   }
 
   deleteAction(id) {
@@ -119,7 +158,17 @@ export default class Outer extends Component {
     return (
       <Layout style={{height: '100%', backgroundColor: '#fff', display: 'flex'}}>
         <Header style={{backgroundColor: '#fff', padding: 10, height: 'auto', lineHeight: 1}}>
-          <Button type="primary" onClick={this.openModelAction.bind(this, 'fruit', null)}><Icon type="plus"/>新增</Button>
+          <Form layout="inline">
+            <Form.Item>
+                <Button type="primary" onClick={this.openModelAction.bind(this, 'fruit', null)}><Icon type="plus"/>新增</Button>
+            </Form.Item>
+            <Form.Item>
+              <Input value={this.state.conditions.title} onChange={e => this.conditionsChangeAction(e, 'title', 'input')} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" onClick={this.searchAction.bind(this)}>搜索</Button>
+            </Form.Item>
+          </Form>
         </Header>
         <Content style={{overflow: 'auto'}}>
           <Table rowKey="_id" onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.fruits} size="middle" bordered pagination={false}/>
@@ -128,7 +177,7 @@ export default class Outer extends Component {
           }
         </Content>
         <Footer style={{padding: 5, backgroundColor: '#fff'}}>
-          <Pagination defaultCurrent={1} total={this.state.total}/>
+          <Pagination defaultCurrent={1} total={this.state.total} pageSize={this.state.limit} current={this.state.page} onChange={this.pageChangeAction.bind(this)}/>
         </Footer>
       </Layout>
     )

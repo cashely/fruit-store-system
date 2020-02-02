@@ -12,13 +12,14 @@ export default class OuterModal extends Component {
         price: 0,
         payStatu: 1,
         pusher: '',
-        outerUnit: '',
-        outerCount: null,
         payNumber: 0,
         avgPrice: 0,
-        reserve: 0,
+        unit: '',
+        unitCount: '',
+        packCount: '',
       },
       maxCount: 0,
+      units: [],
       pushers: [],
       fruits: [],
       payStatus: [{
@@ -41,6 +42,13 @@ export default class OuterModal extends Component {
         this.setState({
           fields: Object.assign({}, this.state.fields, {avgPrice: fruit.avgPrice})
         })
+      }
+      if(fieldname === 'unit' || fieldname === 'packCount' || fieldname === 'unitCount') {
+        if(this.state.fields.unit && this.state.fields.packCount && this.state.fields.unitCount) {
+          this.setState({
+            fields: Object.assign({}, this.state.fields, {count: this.state.fields.packCount * this.state.fields.unitCount})
+          })
+        }
       }
     })
   }
@@ -72,12 +80,15 @@ export default class OuterModal extends Component {
 
   validAction() {
     const findFruit = _.find(this.state.fruits, v => v._id === this.state.fields.fruit);
-    console.log(findFruit)
     if(findFruit) {
       if(findFruit.total < this.state.fields.count) {
         message.error('超出库存限制!')
         return false;
       }
+    }
+    if(!this.state.fields.fruit) {
+      message.error('种类必须选择');
+      return false;
     }
     return true;
   }
@@ -112,6 +123,16 @@ export default class OuterModal extends Component {
     })
   }
 
+  unitsListAction() {
+    $.get('/units').then(res => {
+      if(res.code === 0) {
+        this.setState({
+          units: res.data
+        })
+      }
+    })
+  }
+
   fruitCountAction(e) {
     $.get(`/count/${e}`).then(res => {
       if(res.code === 0 && res.data && res.data.total) {
@@ -125,6 +146,7 @@ export default class OuterModal extends Component {
   componentWillMount() {
     this.pushersListAction();
     this.fruitsListAction();
+    this.unitsListAction();
     this.props.id && this.detailAction();
   }
   render() {
@@ -132,6 +154,14 @@ export default class OuterModal extends Component {
     const {Option} = Select;
     const isEdit = !!this.props.id;
     const fruit = this.state.fruits.filter(v => v._id === this.state.fields.fruit);
+    const unit = (() => {
+      if(!this.state.fields.unit) return '';
+      const unit = _.find(this.state.units, {_id: this.state.fields.unit});
+      if(unit) {
+        return unit.title
+      }
+      return '';
+    })()
     return (
       <Modal
         title="出库信息"
@@ -141,33 +171,31 @@ export default class OuterModal extends Component {
       >
         <Form layout="horizontal" labelCol={{span: 4}} wrapperCol={{span: 20}}>
           <Item label="水果名称">
-            <Select disabled={isEdit} value={this.state.fields.fruit} onChange={(e) => {this.changeAction('fruit', e); this.fruitCountAction(e)}}>
+            <Select disabled={isEdit} value={this.state.fields.fruit} showSearch filterOption={(v,s) => s.props.children.includes(v)} onChange={(e) => {this.changeAction('fruit', e); this.fruitCountAction(e)}}>
               {
                 this.state.fruits.map(fruit => <Option value={fruit._id} key={fruit._id} >{fruit.title}</Option>)
               }
             </Select>
           </Item>
-          <Item label="下单数量">
-            <Input value={this.state.fields.reserve} onChange={(e) => {this.changeAction('reserve', e)}} style={{width: 250}} suffix="斤" />
+          <Item label="规格">
+            <Input style={{width: 60}} placeholder="数量" value={this.state.fields.unitCount} onChange={(e) => this.changeAction('unitCount', e)} /> 斤 /
+            <Select style={{width: 50, marginLeft: 5, marginRight: 10}} value={this.state.fields.unit} showSearch filterOption={(v,s) => s.props.children.includes(v)} onChange={(e) => this.changeAction('unit', e)}>
+              {
+                this.state.units.map(unit => <Option value={unit._id} key={unit._id} >{unit.title}</Option>)
+              }
+            </Select>
+             数量: <Input value={this.state.fields.packCount} onChange={(e) => this.changeAction('packCount', e)} style={{width: 80}} suffix={unit} />
           </Item>
-          <Item label="出库数量">
+          <Item label="出库总数量">
             <Input disabled={isEdit} value={this.state.fields.count} max={fruit.length && fruit[0].total} onChange={(e) => {this.changeAction('count', e)}} style={{width: 250}} suffix="斤" />
             <span className="ant-form-text">(库存数量: {fruit.length && fruit[0].total})</span>
-          </Item>
-          <Item label="打包数量">
-            <Input style={{width: 100}} placeholder="数量" disabled={isEdit} value={this.state.fields.outerCount} onChange={(e) => {this.changeAction('outerCount', e)}} />
-            <Select style={{width: 80, marginLeft: 10}} placeholder="单位" value={this.state.fields.outerUnit} onChange={(e) => this.changeAction('outerUnit', e)}>
-              <Option value={2}>箱</Option>
-              <Option value={1}>斤</Option>
-              <Option value={3}>个</Option>
-            </Select>
           </Item>
           <Item label="单价">
             <Input prefix="￥" suffix="元" style={{width: 250}} value={this.state.fields.price} onChange={(e) => this.changeAction('price', e)} />
             <span className="ant-form-text">(成本均价: {this.state.fields.avgPrice})</span>
         </Item>
           <Item label="出货方">
-            <Select value={this.state.fields.pusher} onChange={(e) => this.changeAction('pusher', e)}>
+            <Select value={this.state.fields.pusher} showSearch filterOption={(v,s) => s.props.children.includes(v)} onChange={(e) => this.changeAction('pusher', e)}>
               {
                 this.state.pushers.map(pusher => <Option value={pusher._id} key={pusher._id} >{pusher.title}</Option>)
               }

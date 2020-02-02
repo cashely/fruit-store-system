@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DatePicker, Layout, Pagination, Table, Tag, Progress, Button, Icon, Upload } from 'antd';
+import { DatePicker, Layout, Pagination, Table, Form, Input, Tag, Progress, Button, Icon, Upload } from 'antd';
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
@@ -16,8 +16,22 @@ export default class Outer extends Component {
       id: null,
       visible: {
         pusher: false
+      },
+      conditions: {
+        title: ''
       }
     }
+  }
+
+  conditionsChangeAction(e, field, type) {
+    let value;
+    switch(type) {
+      case 'input' : value = e.currentTarget.value; break;
+      default: value = e;
+    }
+    this.setState({
+      conditions: Object.assign({}, this.state.conditions, {[field]: value})
+    });
   }
 
   cancelModelAction(modelName) {
@@ -43,6 +57,12 @@ export default class Outer extends Component {
     this.listAction();
   }
 
+  searchAction() {
+    this.setState({
+      page: 1
+    }, this.listAction);
+  }
+
   listAction() {
     $.get('/pushers', {page: this.state.page, limit: this.state.limit, ...this.state.conditions}).then(res => {
       if(res.code === 0) {
@@ -55,7 +75,7 @@ export default class Outer extends Component {
   }
 
   countListAction() {
-    $.get('/pullers/total', this.state.conditions).then(res => {
+    $.get('/pushers/total', this.state.conditions).then(res => {
       if(res.code === 0) {
         this.setState({
           total: res.data
@@ -105,7 +125,9 @@ export default class Outer extends Component {
         render: row => (
           <React.Fragment>
             <Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('pusher', row._id)}} size="small"><Icon type="edit"/></Button>
-            // <Button style={{marginLeft: 10}} type="danger" size="small"><Icon type="delete"/></Button>
+            {
+              // <Button style={{marginLeft: 10}} type="danger" size="small"><Icon type="delete"/></Button>
+            }
           </React.Fragment>
         )
       }
@@ -113,8 +135,18 @@ export default class Outer extends Component {
     return (
       <Layout style={{height: '100%', backgroundColor: '#fff', display: 'flex'}}>
         <Header style={{backgroundColor: '#fff', padding: 10, height: 'auto', lineHeight: 1}}>
-          <Button type="primary" onClick={this.openModelAction.bind(this, 'pusher', null)}><Icon type="plus"/>新增送货方</Button>
-        </Header>
+          <Form layout="inline">
+            <Form.Item>
+                <Button type="primary" onClick={this.openModelAction.bind(this, 'pusher', null)}><Icon type="plus"/>新增送货方</Button>
+            </Form.Item>
+            <Form.Item>
+              <Input value={this.state.conditions.title} onChange={e => this.conditionsChangeAction(e, 'title', 'input')} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" onClick={this.searchAction.bind(this)}>搜索</Button>
+            </Form.Item>
+          </Form>
+      </Header>
         <Content style={{overflow: 'auto'}}>
           <Table rowKey="_id" onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.pushers} size="middle" bordered pagination={false}/>
             {

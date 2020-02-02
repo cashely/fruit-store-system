@@ -50,6 +50,7 @@ export default class Home extends Component {
             description: lowCounts.map(item => <Tag color="#f50">{item.title}</Tag>),
             placement: 'bottomRight',
             duration: null,
+            key,
             btn
           })
         }

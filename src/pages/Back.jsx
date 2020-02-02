@@ -1,25 +1,31 @@
 import React, { Component } from 'react';
-import { DatePicker, Layout, Pagination, Table, Tag, Progress, Button, Icon, Upload, Form, Input } from 'antd';
+import { DatePicker, Layout, Pagination, Table, Tag, Select, Progress, Button, Icon, Upload, Form } from 'antd';
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
-import InnerModal from '../components/models/InnerModal';
+import BackModal from '../components/models/BackModal';
+import ListModal from '../components/models/ListModal';
 
-export default class Inner extends Component {
+export default class Back extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inners: [],
+      orders: [],
       total: 0,
       page: 1,
       limit: 20,
       id: null,
+      back: {
+        list: [],
+        id: null
+      },
       visible: {
-        inner: false
+        back: false,
+        list: false,
       },
       conditions: {
         date: [],
-        id:''
+        type: 0
       }
     }
   }
@@ -52,24 +58,24 @@ export default class Inner extends Component {
     })
   }
 
-  okInnerModalAction() {
-    this.cancelModelAction('inner');
+  okBackModalAction() {
+    this.cancelModelAction('back');
     this.listAction();
   }
 
   listAction() {
-    $.get('/inners', {page: this.state.page, limit: this.state.limit, ...this.state.conditions}).then(res => {
+    $.get('/orders', {page: this.state.page, limit: this.state.limit, ...this.state.conditions}).then(res => {
       if(res.code === 0) {
         this.countListAction();
         this.setState({
-          inners: res.data
+          orders: res.data
         })
       }
     })
   }
 
   countListAction() {
-    $.get('/outers/total', this.state.conditions).then(res => {
+    $.get('/orders/total', this.state.conditions).then(res => {
       if(res.code === 0) {
         this.setState({
           total: res.data
@@ -90,6 +96,18 @@ export default class Inner extends Component {
     }, this.listAction);
   }
 
+  checkBacksAction(id) {
+    $.get('/order/backs', {order: id}).then(res => {
+      if(res.code === 0) {
+        this.setState({
+          back: Object.assign({}, this.state.back, {list: res.data})
+        }, () => {
+          this.openModelAction('list')
+        })
+      }
+    })
+  }
+
   componentWillMount() {
     this.listAction();
   }
@@ -102,7 +120,24 @@ export default class Inner extends Component {
       },
       {
         title: '订单号',
-        dataIndex: '_id'
+        dataIndex: '_id',
+        render: d => <a href="javascript:void(0)" type="link" onClick={this.checkBacksAction.bind(this, d)}>{d}</a>
+      },
+      {
+        title: '类型',
+        dataIndex: 'type',
+        render: d => {
+          let s = '';
+          switch(d) {
+            case 1:
+            s = <Tag color="red">入库</Tag>;
+            break;
+            case 2 :
+            s = <Tag color="green">出库</Tag>;
+            break;
+          }
+          return s;
+        }
       },
       {
         title: '种类',
@@ -141,13 +176,22 @@ export default class Inner extends Component {
         render: d => d && d.acount
       },
       {
-        title: '供应商',
-        dataIndex: 'puller',
-        key: 'puller',
-        render: d => d && d.title
+        title: '商家',
+        render: d => {
+          let s = '';
+          switch(d.type) {
+            case 1:
+            s = d.puller && d.puller.title;
+            break;
+            case 2:
+            s = d.pusher && d.pusher.title;
+            break;
+          }
+          return s;
+        }
       },
       {
-        title: '入库时间',
+        title: '时间',
         dataIndex: 'createdAt',
         render: d => m(d).format('YYYY-MM-DD')
       },
@@ -174,10 +218,7 @@ export default class Inner extends Component {
         align: 'center',
         render: row => (
           <React.Fragment>
-            <Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('inner',row._id)}} size="small"><Icon type="edit"/></Button>
-            {
-              // <Button style={{marginLeft: 10}} type="danger" size="small"><Icon type="delete"/></Button>
-            }
+            <Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('back',row._id)}} size="small"><Icon type="rollback"/></Button>
           </React.Fragment>
         )
       }
@@ -186,14 +227,15 @@ export default class Inner extends Component {
       <Layout style={{height: '100%', backgroundColor: '#fff', display: 'flex'}}>
         <Header style={{backgroundColor: '#fff', padding: 10, height: 'auto', lineHeight: 1}}>
           <Form layout="inline">
-            <Form.Item>
-                <Button type="primary" onClick={this.openModelAction.bind(this, 'inner', null)}><Icon type="download"/>入库</Button>
-            </Form.Item>
             <Form.Item label="时间">
               <DatePicker.RangePicker format="YYYY-MM-DD" value={this.state.conditions.date} onChange={e => this.conditionsChangeAction(e, 'date', 'DATE')} />
             </Form.Item>
-            <Form.Item label="订单号">
-              <Input style={{width: 250}} value={this.state.conditions.id} onChange={e => this.conditionsChangeAction(e, 'id', 'input')} />
+            <Form.Item label="类型">
+              <Select style={{width: 100}} value={this.state.conditions.type} onChange={e => this.conditionsChangeAction(e, 'type')}>
+                <Select.Option value={0}>全部</Select.Option>
+                <Select.Option value={1}>入库</Select.Option>
+                <Select.Option value={2}>出库</Select.Option>
+              </Select>
             </Form.Item>
             <Form.Item>
               <Button type="primary" onClick={this.searchAction.bind(this)}>搜索</Button>
@@ -201,9 +243,12 @@ export default class Inner extends Component {
           </Form>
         </Header>
         <Content style={{overflow: 'auto'}}>
-          <Table rowKey="_id" scroll={{x: true}} onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.inners} size="middle" bordered pagination={false}/>
+          <Table rowKey="_id" onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.orders} size="middle" bordered pagination={false}/>
           {
-            this.state.visible.inner && <InnerModal id={this.state.id} visible={this.state.visible.inner} onOk={this.okInnerModalAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'inner')}/>
+            this.state.visible.back && <BackModal id={this.state.id} visible={this.state.visible.back} onOk={this.okBackModalAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'back')}/>
+          }
+          {
+            this.state.visible.list && <ListModal id={this.state.back.id} width={800} columns={backColumns} dataSource={this.state.back.list} visible={this.state.visible.list} onCancel={this.cancelModelAction.bind(this, 'list')}/>
           }
         </Content>
         <Footer style={{padding: 5, backgroundColor: '#fff'}}>
@@ -229,3 +274,27 @@ for(var a = 0; a < 20; a++) {
     created: '2013-01-02'
   })
 }
+const backColumns = [
+  {
+    title: '序号',
+    render: (t, d, index) => index + 1
+  },
+  {
+    title: '退货单号',
+    dataIndex: '_id'
+  },
+  {
+    title: '订单号',
+    dataIndex: 'order'
+  },
+  {
+    title: '退货数量',
+    dataIndex: 'count',
+    render: d => `${d}斤`
+  },
+  {
+    title: '时间',
+    dataIndex: 'createdAt',
+    render: d => m(d).format('YYYY-MM-DD')
+  }
+]

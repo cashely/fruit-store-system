@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DatePicker, Layout, Pagination, Table, Tag, Progress, Button, Icon, Upload, Form } from 'antd';
+import { DatePicker, Layout, Pagination, Table, Tag, Input, Progress, Button, Icon, Upload, Form } from 'antd';
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
@@ -18,7 +18,8 @@ export default class Outer extends Component {
         outer: false
       },
       conditions: {
-        date: []
+        date: [],
+        id: ''
       }
     }
   }
@@ -34,6 +35,7 @@ export default class Outer extends Component {
   conditionsChangeAction(e, field, type) {
     let value;
     switch(type) {
+      case 'input' : value = e.currentTarget.value; break;
       default: value = e;
     }
     this.setState({
@@ -99,6 +101,10 @@ export default class Outer extends Component {
         render: (t, d, index) => index + 1
       },
       {
+        title: '订单号',
+        dataIndex: '_id'
+      },
+      {
         title: '种类',
         dataIndex: 'fruit.title'
       },
@@ -107,9 +113,21 @@ export default class Outer extends Component {
         dataIndex: 'fruit.total',
       },
       {
-        title: '数量',
+        title: '总重量',
         dataIndex: 'count',
+        key: 'count',
         render: d => `${d} 斤`
+      },
+      {
+        title: '数量',
+        dataIndex: 'packCount'
+      },
+      {
+        title: '规格',
+        render: d => {
+          if(!d.unit) return '无';
+          return `${d.unitCount} 斤/${d.unit.title}`;
+        }
       },
       {
         title: '出库价格(元)',
@@ -184,13 +202,16 @@ export default class Outer extends Component {
             <Form.Item label="时间">
               <DatePicker.RangePicker format="YYYY-MM-DD" value={this.state.conditions.date} onChange={e => this.conditionsChangeAction(e, 'date', 'DATE')} />
             </Form.Item>
+            <Form.Item label="订单号">
+              <Input style={{width: 250}} value={this.state.conditions.id} onChange={e => this.conditionsChangeAction(e, 'id', 'input')} />
+            </Form.Item>
             <Form.Item>
               <Button type="primary" onClick={this.searchAction.bind(this)}>搜索</Button>
             </Form.Item>
           </Form>
         </Header>
         <Content style={{overflow: 'auto'}}>
-          <Table rowKey="_id" onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.outers} size="middle" bordered pagination={false}/>
+          <Table rowKey="_id" scroll={{x: true}} onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.outers} size="middle" bordered pagination={false}/>
           {
             this.state.visible.outer && <OuterModal id={this.state.id} visible={this.state.visible.outer} onOk={this.okOuterModalAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'outer')}/>
           }

@@ -60,7 +60,7 @@ export default class PullerModal extends Component {
     const {Option} = Select;
     return (
       <Modal
-        title="出货商信息"
+        title="供应商信息"
         visible={this.props.visible}
         onOk={this.okAction.bind(this)}
         onCancel={this.props.onCancel}

@@ -91,6 +91,12 @@ module.exports = (app) => {
   .get('/inner/:id', authenticationMiddleware(), routes.inner.detail)
   .put('/inner/:id', authenticationMiddleware(), routes.inner.update)
 
+  .post('/unit', authenticationMiddleware(), routes.unit.add)
+  .get('/units', routes.unit.list)
+  .get('/units/total', authenticationMiddleware(), routes.unit.total)
+  .delete('/unit/:id', authenticationMiddleware(), routes.unit.delete)
+  .get('/unit/:id', authenticationMiddleware(), routes.unit.detail)
+  .put('/unit/:id', authenticationMiddleware(), routes.unit.update)
 
   .post('/costCategory', authenticationMiddleware(), routes.costCategory.add)
   .get('/costCategorys', routes.costCategory.list)
@@ -109,6 +115,9 @@ module.exports = (app) => {
   .get('/count/:fruit', authenticationMiddleware(), routes.count.detail)
 
   .get('/orders', routes.order.list)
+  .post('/order/back', routes.order.back)
+  .get('/order/backs', routes.order.backs)
+  .get('/order/:id', routes.order.detail)
   .get('/orders/total', routes.order.total)
 
   .get('/excel/:filename', routes.order.excel)
