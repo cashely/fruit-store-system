@@ -2,11 +2,11 @@ const models = require('../model.js');
 const moment = require('moment');
 module.exports = {
   list(req, res) {
-    const { page = 1, limit = 20, date = [], id } = req.query;
+    const { page = 1, limit = 20, date = [], id, fruit = '', puller = '' } = req.query;
     let formatDate = date.map(item => {
       return moment(JSON.parse(item)).format('YYYY-MM-DD');
     });
-    let conditions = { type: 1 };
+    let conditions = { type: 1};
     if(formatDate[0]) {
       conditions.createdAt = { $gte: formatDate[0]}
       if(formatDate[1]) {
@@ -15,6 +15,12 @@ module.exports = {
     }
     if(id) {
       conditions._id = id;
+    }
+    if(fruit) {
+      conditions.fruit = fruit
+    }
+    if(puller) {
+      conditions.puller = puller
     }
     const orders = models.orders.find(conditions).populate('creater').populate('fruit').populate('unit').populate('puller').sort({_id: -1}).skip((+page - 1) * limit).limit(+limit).then(orders => {
       req.response(200, orders)

@@ -3,7 +3,7 @@ const _ = require('lodash');
 const moment = require('moment');
 module.exports = {
   list(req, res) {
-    const { page = 1, limit = 20, date = [], id } = req.query;
+    const { page = 1, limit = 20, date = [], id, fruit, pusher } = req.query;
     let formatDate = date.map(item => {
       return moment(JSON.parse(item)).format('YYYY-MM-DD');
     });
@@ -16,6 +16,12 @@ module.exports = {
     }
     if(id) {
       conditions._id = id;
+    }
+    if(fruit) {
+      conditions.fruit = fruit
+    }
+    if(pusher) {
+      conditions.pusher = pusher
     }
     const orders = models.orders.find(conditions).populate('creater').populate('unit').populate('fruit').populate('pusher').sort({_id: -1}).skip((+page - 1) * limit).limit(+limit).then(orders => {
       req.response(200, orders)

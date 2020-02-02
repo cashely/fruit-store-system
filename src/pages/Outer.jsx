@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DatePicker, Layout, Pagination, Table, Tag, Input, Progress, Button, Icon, Upload, Form } from 'antd';
+import { DatePicker, Layout, Pagination, Table, Tag, Input, Progress, Select, Button, Icon, Upload, Form } from 'antd';
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
@@ -19,8 +19,12 @@ export default class Outer extends Component {
       },
       conditions: {
         date: [],
-        id: ''
-      }
+        id: '',
+        fruit: '',
+        pusher: '',
+      },
+      fruits: [],
+      pushers: [],
     }
   }
   cancelModelAction(modelName) {
@@ -90,10 +94,33 @@ export default class Outer extends Component {
     }, this.listAction);
   }
 
+  pullersListAction() {
+    $.get('/pushers', {limit: 1000}).then(res => {
+      if(res.code === 0) {
+        this.setState({
+          pushers: res.data
+        })
+      }
+    })
+  }
+
+  fruitsListAction() {
+    $.get('/fruits', {limit: 1000}).then(res => {
+      if(res.code === 0) {
+        this.setState({
+          fruits: res.data
+        })
+      }
+    })
+  }
+
   componentWillMount() {
     this.listAction();
+    this.pullersListAction();
+    this.fruitsListAction();
   }
   render() {
+    const {Option} = Select;
     const {Content, Footer, Header} = Layout;
     const columns = [
       {
@@ -200,10 +227,24 @@ export default class Outer extends Component {
               <Button type="primary" onClick={this.openModelAction.bind(this, 'outer', null)}><Icon type="download"/>出库</Button>
             </Form.Item>
             <Form.Item label="时间">
-              <DatePicker.RangePicker format="YYYY-MM-DD" value={this.state.conditions.date} onChange={e => this.conditionsChangeAction(e, 'date', 'DATE')} />
+              <DatePicker.RangePicker style={{width: 220}} format="YYYY-MM-DD" value={this.state.conditions.date} onChange={e => this.conditionsChangeAction(e, 'date', 'DATE')} />
             </Form.Item>
             <Form.Item label="订单号">
-              <Input style={{width: 250}} value={this.state.conditions.id} onChange={e => this.conditionsChangeAction(e, 'id', 'input')} />
+              <Input style={{width: 240}} value={this.state.conditions.id} onChange={e => this.conditionsChangeAction(e, 'id', 'input')} />
+            </Form.Item>
+            <Form.Item label="出货商">
+              <Select style={{width: 110}} allowClear placeholder="全部" value={this.state.conditions.pusher} showSearch filterOption={(v,s) => s.props.children.includes(v)}  onChange={e => this.conditionsChangeAction(e, 'pusher')}>
+                {
+                  this.state.pushers.map(pusher => <Option value={pusher._id} key={pusher._id} >{pusher.title}</Option>)
+                }
+              </Select>
+            </Form.Item>
+            <Form.Item label="种类">
+              <Select style={{width: 100}} allowClear placeholder="全部" value={this.state.conditions.fruit} showSearch filterOption={(v,s) => s.props.children.includes(v)}  onChange={e => this.conditionsChangeAction(e, 'fruit')}>
+                {
+                  this.state.fruits.map(fruit => <Option value={fruit._id} key={fruit._id} >{fruit.title}</Option>)
+                }
+              </Select>
             </Form.Item>
             <Form.Item>
               <Button type="primary" onClick={this.searchAction.bind(this)}>搜索</Button>

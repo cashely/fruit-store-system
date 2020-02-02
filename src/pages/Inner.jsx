@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DatePicker, Layout, Pagination, Table, Tag, Progress, Button, Icon, Upload, Form, Input } from 'antd';
+import { DatePicker, Layout, Pagination, Table, Tag, Progress, Select, Button, Icon, Upload, Form, Input } from 'antd';
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
@@ -19,8 +19,12 @@ export default class Inner extends Component {
       },
       conditions: {
         date: [],
-        id:''
-      }
+        id:'',
+        puller: '',
+        fruit: '',
+      },
+      pullers:[],
+      fruits: [],
     }
   }
   cancelModelAction(modelName) {
@@ -33,6 +37,7 @@ export default class Inner extends Component {
   }
 
   conditionsChangeAction(e, field, type) {
+    console.log(e, field)
     let value;
     switch(type) {
       case 'input' : value = e.currentTarget.value; break;
@@ -90,8 +95,30 @@ export default class Inner extends Component {
     }, this.listAction);
   }
 
+  pullersListAction() {
+    $.get('/pullers', {limit: 1000}).then(res => {
+      if(res.code === 0) {
+        this.setState({
+          pullers: res.data
+        })
+      }
+    })
+  }
+
+  fruitsListAction() {
+    $.get('/fruits', {limit: 1000}).then(res => {
+      if(res.code === 0) {
+        this.setState({
+          fruits: res.data
+        })
+      }
+    })
+  }
+
   componentWillMount() {
     this.listAction();
+    this.pullersListAction();
+    this.fruitsListAction();
   }
   render() {
     const {Content, Footer, Header} = Layout;
@@ -182,6 +209,7 @@ export default class Inner extends Component {
         )
       }
     ];
+    const { Option } = Select;
     return (
       <Layout style={{height: '100%', backgroundColor: '#fff', display: 'flex'}}>
         <Header style={{backgroundColor: '#fff', padding: 10, height: 'auto', lineHeight: 1}}>
@@ -190,10 +218,24 @@ export default class Inner extends Component {
                 <Button type="primary" onClick={this.openModelAction.bind(this, 'inner', null)}><Icon type="download"/>入库</Button>
             </Form.Item>
             <Form.Item label="时间">
-              <DatePicker.RangePicker format="YYYY-MM-DD" value={this.state.conditions.date} onChange={e => this.conditionsChangeAction(e, 'date', 'DATE')} />
+              <DatePicker.RangePicker style={{width: 220}} format="YYYY-MM-DD" value={this.state.conditions.date} onChange={e => this.conditionsChangeAction(e, 'date', 'DATE')} />
             </Form.Item>
             <Form.Item label="订单号">
-              <Input style={{width: 250}} value={this.state.conditions.id} onChange={e => this.conditionsChangeAction(e, 'id', 'input')} />
+              <Input style={{width: 240}} value={this.state.conditions.id} onChange={e => this.conditionsChangeAction(e, 'id', 'input')} />
+            </Form.Item>
+            <Form.Item label="供应商">
+              <Select style={{width: 110}} allowClear placeholder="全部" value={this.state.conditions.puller} showSearch filterOption={(v,s) => s.props.children.includes(v)}  onChange={e => this.conditionsChangeAction(e, 'puller')}>
+                {
+                  this.state.pullers.map(puller => <Option value={puller._id} key={puller._id} >{puller.title}</Option>)
+                }
+              </Select>
+            </Form.Item>
+            <Form.Item label="种类">
+              <Select style={{width: 100}} allowClear placeholder="全部" value={this.state.conditions.fruit} showSearch filterOption={(v,s) => s.props.children.includes(v)}  onChange={e => this.conditionsChangeAction(e, 'fruit')}>
+                {
+                  this.state.fruits.map(fruit => <Option value={fruit._id} key={fruit._id} >{fruit.title}</Option>)
+                }
+              </Select>
             </Form.Item>
             <Form.Item>
               <Button type="primary" onClick={this.searchAction.bind(this)}>搜索</Button>
