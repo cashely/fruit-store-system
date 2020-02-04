@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Form, Input, Button, Icon, Modal, Select, message, InputNumber, Radio} from 'antd';
 import $ from '../../ajax';
 import _ from 'lodash';
+import InnerSelectModal from './InnerSelectModal';
 export default class OuterModal extends Component {
   constructor(props) {
     super(props);
@@ -17,9 +18,17 @@ export default class OuterModal extends Component {
         unit: '',
         unitCount: '',
         packCount: '',
+        order: ''
+      },
+      visible: {
+        inner: false
       },
       maxCount: 0,
       units: [],
+      innerDetail: {
+        price: 0,
+        store: 0
+      },
       pushers: [],
       fruits: [],
       payStatus: [{
@@ -31,6 +40,32 @@ export default class OuterModal extends Component {
       }]
     }
   }
+
+  openModelAction(modelName, id = null) {
+    const visible = _.cloneDeep(this.state.visible);
+    visible[modelName] = true;
+    this.setState({
+      visible,
+      id
+    })
+  }
+
+  openInnerModalAction() {
+    if(!this.state.fields.fruit) {
+      return message.error('请先选择种类');
+    }
+    this.openModelAction('inner');
+  }
+
+  cancelModelAction(modelName) {
+    const visible = _.cloneDeep(this.state.visible);
+    visible[modelName] = false;
+    this.setState({
+      visible,
+      id: null
+    })
+  }
+
   changeAction(fieldname, e) {
     if(!e) return;
     const fields = Object.assign({}, this.state.fields, {[fieldname]: typeof(e) === 'object' ? e.currentTarget.value : e})
@@ -52,6 +87,23 @@ export default class OuterModal extends Component {
       }
     })
   }
+
+  okInnerSelectModalAction(selected) {
+    this.changeAction('order', selected[0])
+    this.innerDetailAction(selected[0])
+    this.cancelModelAction('inner');
+  }
+
+  innerDetailAction(id) {
+    $.get(`/inner/${id}`).then(res => {
+      if(res.code === 0 && typeof res.data === 'object') {
+        this.setState({
+          innerDetail: res.data
+        });
+      }
+    })
+  }
+
   okAction() {
     const valid = this.validAction();
     if(!valid) {
@@ -169,6 +221,9 @@ export default class OuterModal extends Component {
         onOk={this.okAction.bind(this)}
         onCancel={this.props.onCancel}
       >
+        {
+          this.state.visible.inner && <InnerSelectModal id={this.state.fields.fruit} visible={this.state.visible.inner} onOk={this.okInnerSelectModalAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'inner')}/>
+        }
         <Form layout="horizontal" labelCol={{span: 4}} wrapperCol={{span: 20}}>
           <Item label="水果名称">
             <Select disabled={isEdit} value={this.state.fields.fruit} showSearch filterOption={(v,s) => s.props.children.includes(v)} onChange={(e) => {this.changeAction('fruit', e); this.fruitCountAction(e)}}>
@@ -176,6 +231,10 @@ export default class OuterModal extends Component {
                 this.state.fruits.map(fruit => <Option value={fruit._id} key={fruit._id} >{fruit.title}</Option>)
               }
             </Select>
+          </Item>
+          <Item label="入库单">
+            <Input allowClear value={this.state.fields.order} onChange={(e) => this.changeAction('order', e)} style={{width: 300}} />
+            <Button style={{marginLeft: 10}} type="primary" onClick={this.openInnerModalAction.bind(this)}>选择</Button>
           </Item>
           <Item label="规格">
             <Input style={{width: 60}} placeholder="数量" value={this.state.fields.unitCount} onChange={(e) => this.changeAction('unitCount', e)} /> 斤 /
@@ -188,11 +247,11 @@ export default class OuterModal extends Component {
           </Item>
           <Item label="出库总数量">
             <Input disabled={isEdit} value={this.state.fields.count} max={fruit.length && fruit[0].total} onChange={(e) => {this.changeAction('count', e)}} style={{width: 250}} suffix="斤" />
-            <span className="ant-form-text">(库存数量: {fruit.length && fruit[0].total})</span>
+            <span className="ant-form-text">(余量: {this.state.innerDetail.store})</span>
           </Item>
           <Item label="单价">
             <Input prefix="￥" suffix="元" style={{width: 250}} value={this.state.fields.price} onChange={(e) => this.changeAction('price', e)} />
-            <span className="ant-form-text">(成本均价: {this.state.fields.avgPrice})</span>
+            <span className="ant-form-text">(入库价: {this.state.innerDetail.price})</span>
         </Item>
           <Item label="出货方">
             <Select value={this.state.fields.pusher} showSearch filterOption={(v,s) => s.props.children.includes(v)} onChange={(e) => this.changeAction('pusher', e)}>

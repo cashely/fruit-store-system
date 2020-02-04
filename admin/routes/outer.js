@@ -23,7 +23,7 @@ module.exports = {
     if(pusher) {
       conditions.pusher = pusher
     }
-    const orders = models.orders.find(conditions).populate('creater').populate('unit').populate('fruit').populate('pusher').sort({_id: -1}).skip((+page - 1) * limit).limit(+limit).then(orders => {
+    const orders = models.orders.find(conditions).populate('creater').populate('order').populate('unit').populate('fruit').populate('pusher').sort({_id: -1}).skip((+page - 1) * limit).limit(+limit).then(orders => {
       req.response(200, orders)
     }).catch(err => {
       console.log(err)
@@ -31,7 +31,7 @@ module.exports = {
     })
   },
   add(req, res) {
-    let {fruit, pusher, price, payStatu, count, payNumber, outerUnit, outerCount, avgPrice, reserve = 0, unit, unitCount, packCount} = req.body;
+    let {fruit, pusher, price, payStatu, count, payNumber, outerUnit, outerCount, avgPrice, reserve = 0, unit, unitCount, packCount, order} = req.body;
     // if(!avgPrice) {
     //   avgPrice = price;
     // }
@@ -47,6 +47,7 @@ module.exports = {
       unit,
       packCount,
       reserve,
+      order,
       creater: req.user.uid
     };
     const $payTotal = price * count; // 应付款项
@@ -65,13 +66,16 @@ module.exports = {
       conditions.outerCount = outerCount
     }
     new models.orders(conditions).save().then(() => {
-      const saveCountPromise = models.fruits.updateOne({_id: fruit}, {$inc: {total: count * -1}, outerPrice: price})
-      saveCountPromise.then(() => {
+      const saveCountPromise = models.fruits.updateOne({_id: fruit}, {$inc: {total: count * -1}, outerPrice: price});
+      const editCountPromise = models.orders.updateOne({_id: order}, {$inc: {store: count * -1}});
+      Promise.all([saveCountPromise, editCountPromise]).then(() => {
         req.response(200, 'ok');
       }).catch(err => {
+        console.log(err)
         req.response(500, err);
       })
     }).catch(err => {
+      console.log(err)
       req.response(500, err);
     })
   },

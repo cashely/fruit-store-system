@@ -146,6 +146,11 @@ export default class Inner extends Component {
         render: d => `${d} 斤`
       },
       {
+        title: '余量',
+        dataIndex: 'store',
+        render: d => `${d} 斤`
+      },
+      {
         title: '数量',
         dataIndex: 'packCount'
       },

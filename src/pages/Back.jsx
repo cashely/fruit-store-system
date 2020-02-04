@@ -248,7 +248,7 @@ export default class Back extends Component {
             this.state.visible.back && <BackModal id={this.state.id} visible={this.state.visible.back} onOk={this.okBackModalAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'back')}/>
           }
           {
-            this.state.visible.list && <ListModal id={this.state.back.id} width={800} columns={backColumns} dataSource={this.state.back.list} visible={this.state.visible.list} onCancel={this.cancelModelAction.bind(this, 'list')}/>
+            this.state.visible.list && <ListModal id={this.state.back.id} width={'70%'} columns={backColumns} dataSource={this.state.back.list} visible={this.state.visible.list} onCancel={this.cancelModelAction.bind(this, 'list')}/>
           }
         </Content>
         <Footer style={{padding: 5, backgroundColor: '#fff'}}>
@@ -285,7 +285,14 @@ const backColumns = [
   },
   {
     title: '订单号',
-    dataIndex: 'order'
+    dataIndex: 'order',
+    render: d => d._id
+  },
+  {
+    title: '退货方',
+    dataIndex: 'order',
+    key: 'back',
+    render: d => d.type === 1 ? d.puller.title : d.pusher.title
   },
   {
     title: '退货数量',

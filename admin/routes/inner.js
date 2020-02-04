@@ -2,7 +2,7 @@ const models = require('../model.js');
 const moment = require('moment');
 module.exports = {
   list(req, res) {
-    const { page = 1, limit = 100, date = [], id, fruit = '', puller = '', ids = [] } = req.query;
+    let { page = 1, limit = 100, date = [], id, fruit = '', puller = '', ids = [], filterTotal = false } = req.query;
     let formatDate = date.map(item => {
       return moment(JSON.parse(item)).format('YYYY-MM-DD');
     });
@@ -22,6 +22,10 @@ module.exports = {
     if(puller) {
       conditions.puller = puller
     }
+    if(+filterTotal) {
+      conditions.store = {$gt: 100}
+    }
+    console.log(ids, typeof ids)
     if(ids.length) {
       conditions._id = {$in: ids}
     }
@@ -48,6 +52,7 @@ module.exports = {
       unit,
       unitCount,
       packCount,
+      store: count,
       creater: req.user.uid
     };
     const $payTotal = price * count; // 应付款项

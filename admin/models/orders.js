@@ -74,6 +74,14 @@ const Orders = new mongoose.Schema({
   },
   mark: {
     type: String
+  },
+  order: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'orders'
+  },
+  store: {
+    type: Number,
+    default: 0
   }
 }, {
   timestamps: {

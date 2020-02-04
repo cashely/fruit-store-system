@@ -15,7 +15,7 @@ export default class Outer extends Component {
       limit: 20,
       id: null,
       visible: {
-        outer: false
+        outer: false,
       },
       conditions: {
         date: [],
@@ -208,6 +208,11 @@ export default class Outer extends Component {
           }
           return s;
         }
+      },
+      {
+        title: '入库单',
+        dataIndex: 'order',
+        render: d => d && d._id
       },
       {
         title: '操作',

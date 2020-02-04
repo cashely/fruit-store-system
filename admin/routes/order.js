@@ -63,7 +63,10 @@ module.exports = {
     let conditions = {
       order
     };
-    models.backs.find(conditions).sort({_id: -1}).then(backs => {
+    models.backs.find(conditions).populate({
+      path: 'order',
+      populate: 'pusher puller'
+    }).sort({_id: -1}).then(backs => {
       req.response(200, backs)
     }).catch(err => {
       req.response(500, err);
