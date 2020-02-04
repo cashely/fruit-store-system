@@ -23,7 +23,7 @@ module.exports = {
       conditions.puller = puller
     }
     if(+filterTotal) {
-      conditions.store = {$gt: 100}
+      conditions.store = {$gt: 0}
     }
     console.log(ids, typeof ids)
     if(ids.length) {
