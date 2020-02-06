@@ -3,7 +3,8 @@ import { DatePicker, Layout, Pagination, Table, Tag, Input, Progress, Select, Bu
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
-import OuterModal from '../components/models/OuterModal';
+import OuterModal from '../components/models/OuterGroupModal';
+import PayModal from '../components/models/PayModal';
 
 export default class Outer extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ export default class Outer extends Component {
       id: null,
       visible: {
         outer: false,
+        pay: false
       },
       conditions: {
         date: [],
@@ -125,6 +127,7 @@ export default class Outer extends Component {
     const columns = [
       {
         title: '序号',
+        key: 'i',
         render: (t, d, index) => index + 1
       },
       {
@@ -142,7 +145,6 @@ export default class Outer extends Component {
       {
         title: '总重量',
         dataIndex: 'count',
-        key: 'count',
         render: d => `${d} 斤`
       },
       {
@@ -151,6 +153,7 @@ export default class Outer extends Component {
       },
       {
         title: '规格',
+        key: 'b',
         render: d => {
           if(!d.unit) return '无';
           return `${d.unitCount} 斤/${d.unit.title}`;
@@ -174,8 +177,9 @@ export default class Outer extends Component {
       },
       {
         title: '利润',
+        key: 'r',
         render:(d) => {
-          return (d.price - d.avgPrice) * d.count
+          return d.order ? ((d.price - d.order.price) * d.count).toFixed(2) : '无'
         }
       },
       {
@@ -195,12 +199,12 @@ export default class Outer extends Component {
       },
       {
         title: '付款情况',
-        dataIndex: 'payStatu',
+        key: 'payStatu',
         render: d => {
           let s = '';
-          switch(d) {
+          switch(d.payStatu) {
             case 1:
-            s = <Tag color="red">未付款</Tag>;
+            s = <Tag color="red" onClick={this.openModelAction.bind(this, 'pay',d._id)}>未付款</Tag>;
             break;
             case 2 :
             s = <Tag color="green">已付款</Tag>;
@@ -219,7 +223,9 @@ export default class Outer extends Component {
         align: 'center',
         render: row => (
           <React.Fragment>
-            <Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('outer',row._id)}} size="small"><Icon type="edit"/></Button>
+            {
+              //<Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('outer',row._id)}} size="small"><Icon type="edit"/></Button>
+            }
           </React.Fragment>
         )
       }
@@ -260,6 +266,9 @@ export default class Outer extends Component {
           <Table rowKey="_id" scroll={{x: true}} onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.outers} size="middle" bordered pagination={false}/>
           {
             this.state.visible.outer && <OuterModal id={this.state.id} visible={this.state.visible.outer} onOk={this.okOuterModalAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'outer')}/>
+          }
+          {
+            this.state.visible.pay && <PayModal id={this.state.id} visible={this.state.visible.pay} onOk={this.listAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'pay')}/>
           }
         </Content>
         <Footer style={{padding: 5, backgroundColor: '#fff'}}>

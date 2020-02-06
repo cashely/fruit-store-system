@@ -115,6 +115,7 @@ module.exports = (app) => {
   .get('/count/:fruit', authenticationMiddleware(), routes.count.detail)
 
   .get('/orders', routes.order.list)
+  .post('/order/pay/:id', routes.order.pay)
   .post('/order/back', routes.order.back)
   .get('/order/backs', routes.order.backs)
   .get('/order/:id', routes.order.detail)

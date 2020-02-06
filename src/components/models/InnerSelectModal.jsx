@@ -58,8 +58,8 @@ export default class Inner extends Component {
         dataIndex: 'fruit.title'
       },
       {
-        title: '总储量',
-        dataIndex: 'fruit.total',
+        title: '余量',
+        dataIndex: 'store'
       },
       {
         title: '总重量',

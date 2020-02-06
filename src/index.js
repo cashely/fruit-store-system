@@ -17,6 +17,8 @@ import Cost from './pages/Cost';
 import Units from './pages/Units';
 import Back from './pages/Back';
 import $ from './ajax';
+
+import PrintInner from './components/prints/inner';
 import * as serviceWorker from './serviceWorker';
 import zhCN from 'antd/es/locale/zh_CN';
 
@@ -158,12 +160,14 @@ function Global(props) {
       <Router>
         <Layout style={{
             display: 'flex',
-            height: '100vh'
+            height: '100vh',
+            backgroundColor: '#fff'
           }}>
           <Content>
             <Switch>
               <Route component={Index} path="/index" />
               <Route exact path="/" component={Login} />
+              <Route exact path="/print/inner" component={PrintInner} />
             </Switch>
           </Content>
         </Layout>

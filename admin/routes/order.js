@@ -84,6 +84,24 @@ module.exports = {
       req.response(500, error)
     })
   },
+  pay(req, res) {
+    const { id}  = req.params;
+    const { payNumber } = req.body;
+    models.orders.findById(id).then(order => {
+      const conditions = {
+        $inc: {payNumber: payNumber * 1}
+      }
+      if(order.payTotal - order.payNumber === +payNumber) {
+        conditions.payStatu = 2
+      }
+      return models.orders.updateOne({_id: id}, conditions)
+    }).then(() => {
+      req.response(200, 'ok');
+    }).catch(err => {
+      console.log(err)
+      req.response(500, err);
+    })
+  },
   excel(req, res) {
     const { filename } = req.params;
     let downloadPath = path.resolve(__dirname, '..', 'downloads');

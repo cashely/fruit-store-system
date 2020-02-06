@@ -3,7 +3,8 @@ import { DatePicker, Layout, Pagination, Table, Tag, Progress, Select, Button, I
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
-import InnerModal from '../components/models/InnerModal';
+import InnerModal from '../components/models/InnerGroupModal';
+import PayModal from '../components/models/PayModal';
 
 export default class Inner extends Component {
   constructor(props) {
@@ -15,7 +16,8 @@ export default class Inner extends Component {
       limit: 20,
       id: null,
       visible: {
-        inner: false
+        inner: false,
+        pay: false
       },
       conditions: {
         date: [],
@@ -25,6 +27,7 @@ export default class Inner extends Component {
       },
       pullers:[],
       fruits: [],
+      selected: [],
     }
   }
   cancelModelAction(modelName) {
@@ -83,9 +86,10 @@ export default class Inner extends Component {
     })
   }
 
-  pageChangeAction(page, pageSize) {
+  pageChangeAction(page, limit) {
     this.setState({
-      page
+      page,
+      limit
     }, this.listAction);
   }
 
@@ -113,6 +117,16 @@ export default class Inner extends Component {
         })
       }
     })
+  }
+
+  tableSelectChangeAction(selected) {
+    this.setState({
+      selected
+    })
+  }
+
+  printAction() {
+    window.open(`/#/print/inner?ids=${this.state.selected}`)
   }
 
   componentWillMount() {
@@ -185,13 +199,12 @@ export default class Inner extends Component {
       },
       {
         title: '付款情况',
-        dataIndex: 'payStatu',
         key: 'payStatu',
         render: d => {
           let s = '';
-          switch(d) {
+          switch(d.payStatu) {
             case 1:
-            s = <Tag color="red">未付款</Tag>;
+            s = <Tag color="red" onClick={this.openModelAction.bind(this, 'pay',d._id)}>未付款</Tag>;
             break;
             case 2 :
             s = <Tag color="green">已付款</Tag>;
@@ -206,7 +219,9 @@ export default class Inner extends Component {
         align: 'center',
         render: row => (
           <React.Fragment>
-            <Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('inner',row._id)}} size="small"><Icon type="edit"/></Button>
+            {
+              // <Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('inner',row._id)}} size="small"><Icon type="edit"/></Button>
+            }
             {
               // <Button style={{marginLeft: 10}} type="danger" size="small"><Icon type="delete"/></Button>
             }
@@ -246,15 +261,30 @@ export default class Inner extends Component {
               <Button type="primary" onClick={this.searchAction.bind(this)}>搜索</Button>
             </Form.Item>
           </Form>
+          <Form layout="inline">
+            <Form.Item>
+              <Button disabled={this.state.selected.length === 0} type="primary" onClick={this.printAction.bind(this)}>批量打印</Button>
+            </Form.Item>
+          </Form>
         </Header>
         <Content style={{overflow: 'auto'}}>
-          <Table rowKey="_id" scroll={{x: true}} onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.inners} size="middle" bordered pagination={false}/>
+          <Table
+            rowSelection={
+              {
+                fixed: true,
+                onChange: this.tableSelectChangeAction.bind(this)
+              }
+            }
+            rowKey="_id" scroll={{x: true}} onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.inners} size="middle" bordered pagination={false}/>
           {
             this.state.visible.inner && <InnerModal id={this.state.id} visible={this.state.visible.inner} onOk={this.okInnerModalAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'inner')}/>
           }
+          {
+            this.state.visible.pay && <PayModal id={this.state.id} visible={this.state.visible.pay} onOk={this.listAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'pay')}/>
+          }
         </Content>
         <Footer style={{padding: 5, backgroundColor: '#fff'}}>
-          <Pagination defaultCurrent={1} total={this.state.total} pageSize={this.state.limit} current={this.state.page} onChange={this.pageChangeAction.bind(this)}/>
+          <Pagination defaultCurrent={1} total={this.state.total} showSizeChanger pageSizeOptions={['20', '40', '100', '200']} pageSize={this.state.limit} current={this.state.page} onChange={this.pageChangeAction.bind(this)} onShowSizeChange={this.pageChangeAction.bind(this)}/>
         </Footer>
       </Layout>
     )

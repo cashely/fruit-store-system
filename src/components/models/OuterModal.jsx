@@ -131,12 +131,9 @@ export default class OuterModal extends Component {
   }
 
   validAction() {
-    const findFruit = _.find(this.state.fruits, v => v._id === this.state.fields.fruit);
-    if(findFruit) {
-      if(findFruit.total < this.state.fields.count) {
-        message.error('超出库存限制!')
-        return false;
-      }
+    if(this.state.innerDetail.store < this.state.fields.count) {
+      message.error('超出库存限制!')
+      return false;
     }
     if(!this.state.fields.fruit) {
       message.error('种类必须选择');
