@@ -27,6 +27,7 @@ export default class Outer extends Component {
       },
       fruits: [],
       pushers: [],
+      selected: [],
     }
   }
   cancelModelAction(modelName) {
@@ -116,6 +117,16 @@ export default class Outer extends Component {
     })
   }
 
+  tableSelectChangeAction(selected) {
+    this.setState({
+      selected
+    })
+  }
+
+  printAction() {
+    window.open(`/#/print/outer?ids=${this.state.selected}`)
+  }
+
   componentWillMount() {
     this.listAction();
     this.pullersListAction();
@@ -198,6 +209,16 @@ export default class Outer extends Component {
         render: d => m(d).format('YYYY-MM-DD')
       },
       {
+        title: '总金额',
+        dataIndex: 'payTotal',
+        render: d => `${d}元`
+      },
+      {
+        title: '已付金额',
+        dataIndex: 'payNumber',
+        render: d => `${d}元`
+      },
+      {
         title: '付款情况',
         key: 'payStatu',
         render: d => {
@@ -261,9 +282,21 @@ export default class Outer extends Component {
               <Button type="primary" onClick={this.searchAction.bind(this)}>搜索</Button>
             </Form.Item>
           </Form>
+          <Form layout="inline">
+            <Form.Item>
+              <Button disabled={this.state.selected.length === 0} type="primary" onClick={this.printAction.bind(this)}>批量打印</Button>
+            </Form.Item>
+          </Form>
         </Header>
         <Content style={{overflow: 'auto'}}>
-          <Table rowKey="_id" scroll={{x: true}} onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.outers} size="middle" bordered pagination={false}/>
+          <Table
+            rowSelection={
+              {
+                fixed: true,
+                onChange: this.tableSelectChangeAction.bind(this)
+              }
+            }
+            rowKey="_id" scroll={{x: true}} onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.outers} size="middle" bordered pagination={false}/>
           {
             this.state.visible.outer && <OuterModal id={this.state.id} visible={this.state.visible.outer} onOk={this.okOuterModalAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'outer')}/>
           }
@@ -272,25 +305,9 @@ export default class Outer extends Component {
           }
         </Content>
         <Footer style={{padding: 5, backgroundColor: '#fff'}}>
-          <Pagination defaultCurrent={1} total={this.state.total} pageSize={this.state.limit} current={this.state.page} onChange={this.pageChangeAction.bind(this)}/>
+          <Pagination defaultCurrent={1} total={this.state.total} showSizeChanger pageSizeOptions={['20', '40', '100', '200']} pageSize={this.state.limit} current={this.state.page} onChange={this.pageChangeAction.bind(this)} onShowSizeChange={this.pageChangeAction.bind(this)}/>
         </Footer>
       </Layout>
     )
   }
-}
-
-let dataSources = []
-
-for(var a = 0; a < 20; a++) {
-  dataSources.push({
-    _id: a,
-    title: `测试用例${a+1}`,
-    total: 50,
-    successed: 20,
-    failed: 20,
-    undo: 10,
-    creater: '张三',
-    runtime: '2013-01-01',
-    created: '2013-01-02'
-  })
 }

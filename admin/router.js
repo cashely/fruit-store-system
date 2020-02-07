@@ -117,6 +117,7 @@ module.exports = (app) => {
   .get('/orders', routes.order.list)
   .post('/order/pay/:id', routes.order.pay)
   .post('/order/back', routes.order.back)
+  .post('/order/lost/:id', routes.order.lost)
   .get('/order/backs', routes.order.backs)
   .get('/order/:id', routes.order.detail)
   .get('/orders/total', routes.order.total)

@@ -19,6 +19,7 @@ import Back from './pages/Back';
 import $ from './ajax';
 
 import PrintInner from './components/prints/inner';
+import PrintOuter from './components/prints/outer';
 import * as serviceWorker from './serviceWorker';
 import zhCN from 'antd/es/locale/zh_CN';
 
@@ -168,6 +169,7 @@ function Global(props) {
               <Route component={Index} path="/index" />
               <Route exact path="/" component={Login} />
               <Route exact path="/print/inner" component={PrintInner} />
+              <Route exact path="/print/outer" component={PrintOuter} />
             </Switch>
           </Content>
         </Layout>

@@ -1,7 +1,7 @@
 const models = require('../model.js');
 module.exports = {
   list(req, res) {
-    const { page = 1, limit = 20, title = '' } = req.query;
+    const { page = 1, limit = 500, title = '' } = req.query;
     const conditions = {
       $or: [
         {title: new RegExp(title ,'ig')},

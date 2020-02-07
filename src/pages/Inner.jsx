@@ -5,6 +5,7 @@ import m from 'moment';
 import _ from 'lodash';
 import InnerModal from '../components/models/InnerGroupModal';
 import PayModal from '../components/models/PayModal';
+import LostModal from '../components/models/LostModal';
 
 export default class Inner extends Component {
   constructor(props) {
@@ -17,13 +18,15 @@ export default class Inner extends Component {
       id: null,
       visible: {
         inner: false,
-        pay: false
+        pay: false,
+        lost: false
       },
       conditions: {
         date: [],
         id:'',
         puller: '',
         fruit: '',
+        filterStore: 1
       },
       pullers:[],
       fruits: [],
@@ -77,7 +80,7 @@ export default class Inner extends Component {
   }
 
   countListAction() {
-    $.get('/outers/total', this.state.conditions).then(res => {
+    $.get('/inners/total', this.state.conditions).then(res => {
       if(res.code === 0) {
         this.setState({
           total: res.data
@@ -160,6 +163,10 @@ export default class Inner extends Component {
         render: d => `${d} 斤`
       },
       {
+        title: '损耗',
+        dataIndex: 'lost'
+      },
+      {
         title: '余量',
         dataIndex: 'store',
         render: d => `${d} 斤`
@@ -198,6 +205,16 @@ export default class Inner extends Component {
         render: d => m(d).format('YYYY-MM-DD')
       },
       {
+        title: '总金额',
+        dataIndex: 'payTotal',
+        render: d => `${d}元`
+      },
+      {
+        title: '已付金额',
+        dataIndex: 'payNumber',
+        render: d => `${d}元`
+      },
+      {
         title: '付款情况',
         key: 'payStatu',
         render: d => {
@@ -223,7 +240,7 @@ export default class Inner extends Component {
               // <Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('inner',row._id)}} size="small"><Icon type="edit"/></Button>
             }
             {
-              // <Button style={{marginLeft: 10}} type="danger" size="small"><Icon type="delete"/></Button>
+              <Button type="primary" size="small" onClick={(e) => {e.stopPropagation(); this.openModelAction('lost',row._id)}}><Icon type="bg-colors"/></Button>
             }
           </React.Fragment>
         )
@@ -257,6 +274,12 @@ export default class Inner extends Component {
                 }
               </Select>
             </Form.Item>
+            <Form.Item label="过滤零库存">
+              <Select style={{width: 60}} dropdownMatchSelectWidth={false} allowClear placeholder="全部" value={this.state.conditions.filterStore} onChange={e => this.conditionsChangeAction(e, 'filterStore')}>
+                <Option value={0}>否</Option>
+                <Option value={1}>是</Option>
+              </Select>
+            </Form.Item>
             <Form.Item>
               <Button type="primary" onClick={this.searchAction.bind(this)}>搜索</Button>
             </Form.Item>
@@ -282,6 +305,9 @@ export default class Inner extends Component {
           {
             this.state.visible.pay && <PayModal id={this.state.id} visible={this.state.visible.pay} onOk={this.listAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'pay')}/>
           }
+          {
+            this.state.visible.lost && <LostModal id={this.state.id} visible={this.state.visible.lost} onOk={this.listAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'lost')}/>
+          }
         </Content>
         <Footer style={{padding: 5, backgroundColor: '#fff'}}>
           <Pagination defaultCurrent={1} total={this.state.total} showSizeChanger pageSizeOptions={['20', '40', '100', '200']} pageSize={this.state.limit} current={this.state.page} onChange={this.pageChangeAction.bind(this)} onShowSizeChange={this.pageChangeAction.bind(this)}/>
@@ -289,20 +315,4 @@ export default class Inner extends Component {
       </Layout>
     )
   }
-}
-
-let dataSources = []
-
-for(var a = 0; a < 20; a++) {
-  dataSources.push({
-    id: a,
-    title: `测试用例${a+1}`,
-    total: 50,
-    successed: 20,
-    failed: 20,
-    undo: 10,
-    creater: '张三',
-    runtime: '2013-01-01',
-    created: '2013-01-02'
-  })
 }

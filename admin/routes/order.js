@@ -73,10 +73,20 @@ module.exports = {
     })
   },
   total(req, res) {
-    const q = req.query;
+    const {date = [], type} = req.query;
     let conditions = {};
-    if(q._k) {
-      conditions.acount = new RegExp(q._k);
+    let formatDate = date.map(item => {
+      return moment(JSON.parse(item)).format('YYYY-MM-DD');
+    });
+    let conditions = {};
+    if(!!+type) {
+      conditions.type = type
+    }
+    if(formatDate[0]) {
+      conditions.createdAt = { $gte: formatDate[0]}
+      if(formatDate[1]) {
+        conditions.createdAt = { $gte: formatDate[0], $lte: moment(formatDate[1]).add(1, 'days').format('YYYY-MM-DD')}
+      }
     }
     models.orders.countDocuments(conditions).then(count => {
       req.response(200, count);
@@ -96,6 +106,19 @@ module.exports = {
       }
       return models.orders.updateOne({_id: id}, conditions)
     }).then(() => {
+      req.response(200, 'ok');
+    }).catch(err => {
+      console.log(err)
+      req.response(500, err);
+    })
+  },
+  lost(req, res) {
+    const { id}  = req.params;
+    const { lost } = req.body;
+    const conditions = {
+      $inc: {store: lost * -1, lost: lost * 1}
+    }
+    models.orders.updateOne({_id: id}, conditions).then(() => {
       req.response(200, 'ok');
     }).catch(err => {
       console.log(err)

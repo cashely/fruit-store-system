@@ -119,6 +119,14 @@ export default class OuterGroupModal extends Component {
     //   message.error('种类必须选择');
     //   return false;
     // }
+    let valid = this.state.fields.map((field, index) => {
+      return field.count <= this.state.innerDetail[index].store
+    })
+    valid = valid.every(v => v);
+    if(!valid) {
+      message.error('超出库存限制');
+      return false;
+    }
     return true;
   }
 

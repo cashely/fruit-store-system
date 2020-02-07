@@ -3,7 +3,7 @@ const _ = require('lodash');
 const moment = require('moment');
 module.exports = {
   list(req, res) {
-    const { page = 1, limit = 20, date = [], id, fruit, pusher } = req.query;
+    const { page = 1, limit = 20, date = [], id, fruit, pusher, ids = [] } = req.query;
     let formatDate = date.map(item => {
       return moment(JSON.parse(item)).format('YYYY-MM-DD');
     });
@@ -22,6 +22,9 @@ module.exports = {
     }
     if(pusher) {
       conditions.pusher = pusher
+    }
+    if(ids.length) {
+      conditions._id = {$in: ids}
     }
     const orders = models.orders.find(conditions).populate('creater').populate('order').populate('unit').populate('fruit').populate('pusher').sort({_id: -1}).skip((+page - 1) * limit).limit(+limit).then(orders => {
       req.response(200, orders)
@@ -111,7 +114,7 @@ module.exports = {
     })
   },
   total(req, res) {
-    const { page = 1, limit = 20, date = [] } = req.query;
+    const { page = 1, limit = 500, date = [], id, fruit, pusher, ids = [] } = req.query;
     let formatDate = date.map(item => {
       return moment(JSON.parse(item)).format('YYYY-MM-DD');
     });
@@ -124,6 +127,15 @@ module.exports = {
       if(formatDate[1]) {
         conditions.createdAt = { $gte: formatDate[0], $lte: formatDate[1]}
       }
+    }
+    if(fruit) {
+      conditions.fruit = fruit
+    }
+    if(pusher) {
+      conditions.pusher = pusher
+    }
+    if(ids.length) {
+      conditions._id = {$in: ids}
     }
     models.orders.countDocuments(conditions).then(count => {
       req.response(200, count);

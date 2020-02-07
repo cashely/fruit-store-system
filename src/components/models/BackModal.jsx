@@ -47,6 +47,7 @@ export default class InnerModal extends Component {
     $.post(`/order/back`, this.state.fields).then(res => {
       if(res.code === 0) {
         message.success('操作成功');
+        this.props.onCancel();
         this.props.onOk();
       } else {
         message.error('操作失败');

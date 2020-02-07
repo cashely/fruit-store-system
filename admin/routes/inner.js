@@ -2,7 +2,7 @@ const models = require('../model.js');
 const moment = require('moment');
 module.exports = {
   list(req, res) {
-    let { page = 1, limit = 100, date = [], id, fruit = '', puller = '', ids = [], filterTotal = false } = req.query;
+    let { page = 1, limit = 100, date = [], id, fruit = '', puller = '', ids = [], filterTotal = false, filterStore } = req.query;
     let formatDate = date.map(item => {
       return moment(JSON.parse(item)).format('YYYY-MM-DD');
     });
@@ -22,10 +22,9 @@ module.exports = {
     if(puller) {
       conditions.puller = puller
     }
-    if(+filterTotal) {
+    if(+filterStore) {
       conditions.store = {$gt: 0}
     }
-    console.log(ids, typeof ids)
     if(ids.length) {
       conditions._id = {$in: ids}
     }
@@ -110,7 +109,7 @@ module.exports = {
     })
   },
   total(req, res) {
-    const { date = [] } = req.query;
+    const { date = [], id, fruit = '', puller = '', ids = [], filterTotal = false, filterStore } = req.query;
     let formatDate = date.map(item => {
       return moment(JSON.parse(item)).format('YYYY-MM-DD');
     });
@@ -120,6 +119,21 @@ module.exports = {
       if(formatDate[1]) {
         conditions.createdAt = { $gte: formatDate[0], $lte: formatDate[1]}
       }
+    }
+    if(id) {
+      conditions._id = id;
+    }
+    if(fruit) {
+      conditions.fruit = fruit
+    }
+    if(puller) {
+      conditions.puller = puller
+    }
+    if(+filterStore) {
+      conditions.store = {$gt: 0}
+    }
+    if(ids.length) {
+      conditions._id = {$in: ids}
     }
     models.orders.countDocuments(conditions).then(count => {
       req.response(200, count);

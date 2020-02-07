@@ -82,6 +82,10 @@ const Orders = new mongoose.Schema({
   store: {
     type: Number,
     default: 0
+  },
+  lost: { // 损耗
+    type: Number,
+    default: 0
   }
 }, {
   timestamps: {
