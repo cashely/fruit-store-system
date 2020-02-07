@@ -298,6 +298,16 @@ export default class Inner extends Component {
                 onChange: this.tableSelectChangeAction.bind(this)
               }
             }
+            footer={
+              (data) => {
+                return (
+                  <React.Fragment>
+                    <b>统计:</b>
+                    <span style={{marginLeft: 10}}>{`总重量:${data.reduce((a, b) => a + b.count, 0) }斤; 总金额:${data.reduce((a, b) => a + b.payTotal, 0)}元`}</span>
+                  </React.Fragment>
+                )
+              }
+            }
             rowKey="_id" scroll={{x: true}} onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.inners} size="middle" bordered pagination={false}/>
           {
             this.state.visible.inner && <InnerModal id={this.state.id} visible={this.state.visible.inner} onOk={this.okInnerModalAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'inner')}/>

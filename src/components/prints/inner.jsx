@@ -33,6 +33,16 @@ export default class PrintInner extends React.Component {
     return (
       <div style={{padding: 10}}>
         <Table
+          footer={
+            (data) => {
+              return (
+                <React.Fragment>
+                  <b>统计:</b>
+                  <span style={{marginLeft: 10}}>{`总重量:${data.reduce((a, b) => a + b.count, 0) }斤; 总金额:${data.reduce((a, b) => a + b.payTotal, 0)}元`}</span>
+                </React.Fragment>
+              )
+            }
+          }
           title={() => {
             return (
               <React.Fragment>
