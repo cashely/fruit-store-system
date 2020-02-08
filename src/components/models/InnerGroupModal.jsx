@@ -161,7 +161,7 @@ export default class InnerGroupModal extends Component {
       {
         title: '种类',
         render: (d, r, index) => (
-          <Select dropdownMatchSelectWidth={false} style={{width: 100}} value={this.state.fields[index].fruit} showSearch filterOption={(v,s) => s.props.children.includes(v)} onChange={(e) => this.editRowFieldAction(index, 'fruit', e)}>
+          <Select dropdownMatchSelectWidth={false} style={{width: 180}} value={this.state.fields[index].fruit} showSearch filterOption={(v,s) => s.props.children.includes(v)} onChange={(e) => this.editRowFieldAction(index, 'fruit', e)}>
             {
               this.state.fruits.map(fruit => <Option value={fruit._id} key={fruit._id} >{fruit.title}</Option>)
             }
@@ -213,7 +213,7 @@ export default class InnerGroupModal extends Component {
       {
         title: '供应商',
         render: (d, r, index) => (
-          <Select dropdownMatchSelectWidth={false} style={{width: 100}} value={this.state.fields[index].puller} showSearch filterOption={(v,s) => s.props.children.includes(v)} onChange={(e) => this.editRowFieldAction(index, 'puller', e)}>
+          <Select dropdownMatchSelectWidth={false} style={{width: 180}} value={this.state.fields[index].puller} showSearch filterOption={(v,s) => s.props.children.includes(v)} onChange={(e) => this.editRowFieldAction(index, 'puller', e)}>
             {
               this.state.pullers.map(puller => <Option value={puller._id} key={puller._id} >{puller.title}</Option>)
             }

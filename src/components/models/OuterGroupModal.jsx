@@ -266,7 +266,7 @@ export default class OuterGroupModal extends Component {
         title: '种类',
         key: 'b',
         render: (d, r, index) => (
-          <Select dropdownMatchSelectWidth={false} style={{width: 100}} value={this.state.fields[index].fruit} showSearch filterOption={(v,s) => s.props.children.includes(v)} onChange={(e) => this.editRowFieldAction(index, 'fruit', e)}>
+          <Select dropdownMatchSelectWidth={false} style={{width: 180}} value={this.state.fields[index].fruit} showSearch filterOption={(v,s) => s.props.children.includes(v)} onChange={(e) => this.editRowFieldAction(index, 'fruit', e)}>
             {
               this.state.fruits.map(fruit => <Option value={fruit._id} key={fruit._id} >{fruit.title}</Option>)
             }
@@ -278,7 +278,7 @@ export default class OuterGroupModal extends Component {
         key: 'c',
         render: (d, r, index) => (
           <React.Fragment>
-            <Input allowClear value={this.state.fields[index].order} onChange={(e) => this.editRowFieldAction(index, 'order', e)} style={{width: 300}} />
+            <Input allowClear value={this.state.fields[index].order} onChange={(e) => this.editRowFieldAction(index, 'order', e)} style={{width: 260}} />
             <Button style={{marginLeft: 10}} type="primary" onClick={this.openInnerModalAction.bind(this, index)}>选择</Button>
           </React.Fragment>
         )
@@ -327,12 +327,12 @@ export default class OuterGroupModal extends Component {
         }
       },
       {
-        title: '单价',
+        title: '规格单价',
         key: 'g',
         render: (d, r, index) => (
           <React.Fragment>
             <Input style={{width: 120}} value={this.state.fields[index].price} onChange={(e) => this.editRowFieldAction(index, 'price', e)} prefix="￥" suffix="元" />
-            <span className="ant-form-text">(入库价: {this.state.innerDetail[index].price})</span>
+            <span className="ant-form-text">(入库价: {this.state.innerDetail[index].price} 元/斤)</span>
           </React.Fragment>
         )
       },
@@ -340,7 +340,7 @@ export default class OuterGroupModal extends Component {
         title: '出货方',
         key: 'h',
         render: (d, r, index) => (
-          <Select dropdownMatchSelectWidth={false} value={this.state.fields[index].pusher} showSearch filterOption={(v,s) => s.props.children.includes(v)} onChange={(e) => this.editRowFieldAction(index, 'pusher', e)} style={{width: 100}}>
+          <Select dropdownMatchSelectWidth={false} value={this.state.fields[index].pusher} showSearch filterOption={(v,s) => s.props.children.includes(v)} onChange={(e) => this.editRowFieldAction(index, 'pusher', e)} style={{width: 180}}>
             {
               this.state.pushers.map(pusher => <Option value={pusher._id} key={pusher._id} >{pusher.title}</Option>)
             }
@@ -363,7 +363,7 @@ export default class OuterGroupModal extends Component {
         key: 'j',
         render: (d, r, index) => (
           <React.Fragment>
-            <Input disabled={this.state.fields[index].payStatu === 2} value={this.state.fields[index].payStatu === 2 ? this.state.fields[index].price * this.state.fields[index].count : this.state.fields[index].payNumber} style={{width: 100}} onChange={(e) => this.editRowFieldAction(index, 'payNumber', e)} prefix="￥" suffix="元" /> (应付金额: ￥{this.state.fields[index].price * this.state.fields[index].count})
+            <Input disabled={this.state.fields[index].payStatu === 2} value={this.state.fields[index].payStatu === 2 ? this.state.fields[index].price * this.state.fields[index].packCount : this.state.fields[index].payNumber} style={{width: 100}} onChange={(e) => this.editRowFieldAction(index, 'payNumber', e)} prefix="￥" suffix="元" /> (应付金额: ￥{(this.state.fields[index].price * this.state.fields[index].packCount).toFixed(2)})
           </React.Fragment>
         )
       }

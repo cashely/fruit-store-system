@@ -79,11 +79,12 @@ const columns = [
   {
     title: '总重量',
     dataIndex: 'count',
-    render: d => `${d} 斤`
+    render: d => `${d.toFixed(2)} 斤`
   },
   {
     title: '数量',
-    dataIndex: 'packCount'
+    key: 'packCount',
+    render: d => (d.unit && d.unit.title) ? `${d.packCount} ${d.unit.title}` : d.packCount
   },
   {
     title: '规格',
@@ -95,7 +96,8 @@ const columns = [
   },
   {
     title: '出库价格(元)',
-    dataIndex: 'price'
+    key: 'price',
+    render: d => (d.unit && d.unit.title) ? `${d.price} 元/${d.unit.title}` : d.price
   },
   {
     title: '下单数量',
@@ -119,11 +121,11 @@ const columns = [
   {
     title: '总金额',
     dataIndex: 'payTotal',
-    render: d => `${d}元`
+    render: d => `${d.toFixed(2)}元`
   },
   {
     title: '已付金额',
     dataIndex: 'payNumber',
-    render: d => `${d}元`
+    render: d => `${d.toFixed(2)}元`
   },
 ];

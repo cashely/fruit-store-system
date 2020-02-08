@@ -43,7 +43,7 @@ module.exports = {
       type: 2,
       fruit,
       pusher,
-      price,
+      price, // 规格单价
       count,
       avgPrice,
       unitCount,
@@ -53,7 +53,7 @@ module.exports = {
       order,
       creater: req.user.uid
     };
-    const $payTotal = price * count; // 应付款项
+    const $payTotal = price * packCount; // 应付款项
     if(payStatu === 2) {
       payNumber = $payTotal
     }else if(+payNumber === $payTotal) {
@@ -69,7 +69,7 @@ module.exports = {
       conditions.outerCount = outerCount
     }
     new models.orders(conditions).save().then(() => {
-      const saveCountPromise = models.fruits.updateOne({_id: fruit}, {$inc: {total: count * -1}, outerPrice: price});
+      const saveCountPromise = models.fruits.updateOne({_id: fruit}, {$inc: {total: count * -1}, outerPrice: price / unitCount});
       const editCountPromise = models.orders.updateOne({_id: order}, {$inc: {store: count * -1}});
       Promise.all([saveCountPromise, editCountPromise]).then(() => {
         req.response(200, 'ok');

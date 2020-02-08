@@ -160,7 +160,8 @@ export default class Outer extends Component {
       },
       {
         title: '数量',
-        dataIndex: 'packCount'
+        key: 'packCount',
+        render: d => (d.unit && d.unit.title) ? `${d.packCount} ${d.unit.title}` : d.packCount
       },
       {
         title: '规格',
@@ -172,11 +173,13 @@ export default class Outer extends Component {
       },
       {
         title: '出库价格(元)',
-        dataIndex: 'price'
+        key: 'price',
+        render: d => (d.unit && d.unit.title) ? `${d.price} 元/${d.unit.title}` : d.price
       },
       {
         title: '成本均价',
-        dataIndex: 'avgPrice'
+        dataIndex: 'avgPrice',
+        render: d => d.toFixed(2)
       },
       {
         title: '下单数量',
@@ -185,6 +188,7 @@ export default class Outer extends Component {
       {
         title: '金额',
         dataIndex: 'payTotal',
+        render: d => d.toFixed(2)
       },
       {
         title: '利润',
@@ -211,12 +215,12 @@ export default class Outer extends Component {
       {
         title: '总金额',
         dataIndex: 'payTotal',
-        render: d => `${d}元`
+        render: d => `${d.toFixed(2)}元`
       },
       {
         title: '已付金额',
         dataIndex: 'payNumber',
-        render: d => `${d}元`
+        render: d => `${d.toFixed(2)}元`
       },
       {
         title: '付款情况',

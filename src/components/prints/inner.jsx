@@ -130,7 +130,7 @@ const columns = [
   {
     title: '总金额',
     dataIndex: 'payTotal',
-    render: d => `${d}元`
+    render: d => `${d.toFixed(2)}元`
   },
   {
     title: '已付金额',
