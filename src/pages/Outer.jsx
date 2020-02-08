@@ -194,7 +194,7 @@ export default class Outer extends Component {
         title: '利润',
         key: 'r',
         render:(d) => {
-          return d.order ? ((d.price - d.order.price) * d.count).toFixed(2) : '无'
+          return d.order ? ((d.price / d.unitCount - d.order.price) * d.count).toFixed(2) : '无'
         }
       },
       {
