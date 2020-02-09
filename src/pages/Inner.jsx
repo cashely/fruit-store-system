@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DatePicker, Layout, Pagination, Table, Tag, Progress, Select, Button, Icon, Upload, Form, Input } from 'antd';
+import { DatePicker, Layout, Pagination, Table, Tag, Popconfirm, Progress, Select, Button, Icon, Upload, Form, Input, message } from 'antd';
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
@@ -75,6 +75,17 @@ export default class Inner extends Component {
         this.setState({
           inners: res.data
         })
+      }
+    })
+  }
+
+  deleteAction(id) {
+    $.delete(`/inner/${id}`).then(res => {
+      if(res.code === 0) {
+        this.listAction();
+        message.success('操作成功')
+      } else {
+        message.error('操作失败');
       }
     })
   }
@@ -160,7 +171,7 @@ export default class Inner extends Component {
         title: '总重量',
         dataIndex: 'count',
         key: 'count',
-        render: d => `${d} 斤`
+        render: d => `${d.toFixed(2)} 斤`
       },
       {
         title: '损耗',
@@ -169,7 +180,7 @@ export default class Inner extends Component {
       {
         title: '余量',
         dataIndex: 'store',
-        render: d => `${d} 斤`
+        render: d => `${d.toFixed(2)} 斤`
       },
       {
         title: '数量',
@@ -241,6 +252,14 @@ export default class Inner extends Component {
             }
             {
               <Button type="primary" size="small" onClick={(e) => {e.stopPropagation(); this.openModelAction('lost',row._id)}}><Icon type="bg-colors"/></Button>
+            }
+            {
+              <Popconfirm
+                title="您确认要删除这条数据吗?"
+                onConfirm={this.deleteAction.bind(this, row._id)}
+              >
+                <Button type="danger" style={{marginLeft: 10}} size="small"><Icon type="delete"/></Button>
+              </Popconfirm>
             }
           </React.Fragment>
         )

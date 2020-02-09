@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DatePicker, Layout, Pagination, Table, Tag, Input, Progress, Select, Button, Icon, Upload, Form } from 'antd';
+import { DatePicker, Layout, Pagination, Table, Tag, Popconfirm, message, Input, Progress, Select, Button, Icon, Upload, Form } from 'antd';
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
@@ -85,6 +85,17 @@ export default class Outer extends Component {
     })
   }
 
+  deleteAction(id) {
+    $.delete(`/outer/${id}`).then(res => {
+      if(res.code === 0) {
+        this.listAction();
+        message.success('操作成功')
+      } else {
+        message.error('操作失败');
+      }
+    })
+  }
+
   pageChangeAction(page, pageSize) {
     this.setState({
       page
@@ -156,7 +167,7 @@ export default class Outer extends Component {
       {
         title: '总重量',
         dataIndex: 'count',
-        render: d => `${d} 斤`
+        render: d => `${d.toFixed(2)} 斤`
       },
       {
         title: '数量',
@@ -250,6 +261,14 @@ export default class Outer extends Component {
           <React.Fragment>
             {
               //<Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('outer',row._id)}} size="small"><Icon type="edit"/></Button>
+            }
+            {
+              <Popconfirm
+                title="您确认要删除这条数据吗?"
+                onConfirm={this.deleteAction.bind(this, row._id)}
+              >
+                <Button type="danger" style={{marginLeft: 10}} size="small"><Icon type="delete"/></Button>
+              </Popconfirm>
             }
           </React.Fragment>
         )

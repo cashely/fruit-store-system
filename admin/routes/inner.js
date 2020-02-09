@@ -86,10 +86,15 @@ module.exports = {
     })
   },
   delete(req, res) {
-    const {id} = req.params.id;
-    models.orders.deleteById(id).then(() => {
+    const {id} = req.params;
+    models.orders.findById(id).then(order => {
+      return models.fruits.updateOne({_id: order.fruit}, {$inc: {total: order.store * -1}})
+    }).then(() => {
+      return models.orders.deleteOne({_id: id})
+    }).then(() => {
       req.response(200, 'ok');
     }).catch(err => {
+      console.log(err)
       req.response(500, err);
     })
   },

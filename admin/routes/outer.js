@@ -91,8 +91,12 @@ module.exports = {
     })
   },
   delete(req, res) {
-    const {id} = req.params.id;
-    models.orders.deleteById(id).then(() => {
+    const {id} = req.params;
+    models.orders.findById(id).then(order => {
+      return models.orders.updateOne({_id: order.order}, {$inc: {store: order.count * 1}})
+    }).then(() => {
+      return models.orders.deleteOne({_id: id})
+    }).then(() => {
       req.response(200, 'ok');
     }).catch(err => {
       req.response(500, err);
