@@ -32,7 +32,6 @@ class LoginForm extends Component {
   submitAction() {
     console.log(this.props.form.getFieldsValue())
     $.post('/login', this.props.form.getFieldsValue()).then(res => {
-      console.log(res)
       if(res.code === 0) {
         message.success('登录成功')
         setTimeout(() => {

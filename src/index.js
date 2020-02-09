@@ -18,6 +18,8 @@ import Units from './pages/Units';
 import Back from './pages/Back';
 import $ from './ajax';
 
+import {setUser} from './functions/index';
+
 import PrintInner from './components/prints/inner';
 import PrintOuter from './components/prints/outer';
 import * as serviceWorker from './serviceWorker';
@@ -47,11 +49,12 @@ function Index(props) {
     })
   }
 
-  const [user, setUser] = useState({});
+  const [user, setStateUser] = useState({});
 
   useEffect(() => {
     $.get('/me').then(res => {
       if(res.code === 0) {
+        setStateUser(res.data)
         setUser(res.data)
       }
     })

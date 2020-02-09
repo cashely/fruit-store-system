@@ -11,6 +11,7 @@ import {
   Popconfirm
 } from 'antd';
 import moment from 'moment';
+import {userInfoAction} from '../functions/index';
 import $ from '../ajax';
 import UserModal from '../components/UserModal';
 export default class User extends Component {
@@ -85,7 +86,8 @@ export default class User extends Component {
   }
 
   componentWillMount() {
-    this.usersAction()
+    this.usersAction();
+    userInfoAction.call(this);
   }
   render() {
     const columns = [
@@ -135,9 +137,14 @@ export default class User extends Component {
         align: 'center',
         render: row => (<React.Fragment>
           <Button type="primary" size="small" onClick={this.checkUserDetailAction.bind(this, row._id)}><Icon type="edit"/></Button>
-          <Popconfirm title="您确定要删除吗？" onConfirm={this.userDeleteAction.bind(this, row._id)} onCancel={() => {}}>
-            <Button type="danger" size="small"><Icon type="delete"/></Button>
-          </Popconfirm>
+          {
+            this.state.user && this.state.user.role === 3  && <Popconfirm
+              title="您确认要删除这条数据吗?"
+              onConfirm={this.userDeleteAction.bind(this, row._id)}
+            >
+              <Button type="danger" style={{marginLeft: 10}} size="small"><Icon type="delete"/></Button>
+            </Popconfirm>
+          }
         </React.Fragment>)
       }
     ];

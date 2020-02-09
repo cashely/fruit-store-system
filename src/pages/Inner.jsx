@@ -3,6 +3,7 @@ import { DatePicker, Layout, Pagination, Table, Tag, Popconfirm, Progress, Selec
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
+import {userInfoAction} from '../functions/index';
 import InnerModal from '../components/models/InnerGroupModal';
 import PayModal from '../components/models/PayModal';
 import LostModal from '../components/models/LostModal';
@@ -145,6 +146,7 @@ export default class Inner extends Component {
 
   componentWillMount() {
     this.listAction();
+    userInfoAction.call(this);
     this.pullersListAction();
     this.fruitsListAction();
   }
@@ -254,7 +256,7 @@ export default class Inner extends Component {
               <Button type="primary" size="small" onClick={(e) => {e.stopPropagation(); this.openModelAction('lost',row._id)}}><Icon type="bg-colors"/></Button>
             }
             {
-              <Popconfirm
+              this.state.user && this.state.user.role === 3  && <Popconfirm
                 title="您确认要删除这条数据吗?"
                 onConfirm={this.deleteAction.bind(this, row._id)}
               >

@@ -5,7 +5,9 @@ module.exports = {
   list(req, res, next) {
     const { page = 1, limit = 20 } = req.query;
     const q = req.query;
-    let conditions = {};
+    let conditions = {
+      acount: {$ne: 'root'}
+    };
     if(q._k) {
       conditions.acount = new RegExp(q._k);
     }

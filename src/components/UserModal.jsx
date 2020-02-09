@@ -7,7 +7,7 @@ export default class UserModal extends Component {
     super(props);
     this.state = {
       fields: {
-        acount: '11111',
+        acount: '',
         password: '',
         statu: 1,
         role: 0

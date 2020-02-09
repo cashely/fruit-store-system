@@ -3,6 +3,7 @@ import { DatePicker, Layout, Pagination, Form, Input, Table, Tag, Progress, Butt
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
+import {userInfoAction, deleteAction} from '../functions/index';
 import FruitModel from '../components/models/FruitModel';
 
 export default class Outer extends Component {
@@ -101,6 +102,7 @@ export default class Outer extends Component {
 
   componentWillMount() {
     this.listAction();
+    userInfoAction.call(this);
   }
   render() {
     const {Content, Footer, Header} = Layout;
@@ -143,14 +145,14 @@ export default class Outer extends Component {
         render: row => (
           <React.Fragment>
             <Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('fruit', row._id)}} size="small"><Icon type="edit"/></Button>
-              <Popconfirm
-                title="您确定要删除?"
+            {
+              this.state.user && this.state.user.role === 3  && <Popconfirm
+                title="您确认要删除这条数据吗?"
                 onConfirm={this.deleteAction.bind(this, row._id)}
-                okText="是"
-                cancelText="否"
               >
-                <Button style={{marginLeft: 10}} type="danger" size="small"><Icon type="delete"/></Button>
+                <Button type="danger" style={{marginLeft: 10}} size="small"><Icon type="delete"/></Button>
               </Popconfirm>
+            }
           </React.Fragment>
         )
       }

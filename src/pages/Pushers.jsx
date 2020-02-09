@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { DatePicker, Layout, Pagination, Table, Form, Input, Tag, Progress, Button, Icon, Upload } from 'antd';
+import { DatePicker, Layout, Pagination, Table, Popconfirm, Form, Input, Tag, Progress, Button, Icon, Upload } from 'antd';
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
+import {userInfoAction, deleteAction} from '../functions/index';
 import PusherModal from '../components/models/PusherModal';
 
 export default class Outer extends Component {
@@ -74,6 +75,13 @@ export default class Outer extends Component {
     })
   }
 
+  deleteAction(id) {
+    deleteAction.call(this, {
+      success: this.listAction.bind(this),
+      url: `/puller/${id}`
+    })
+  }
+
   countListAction() {
     $.get('/pushers/total', this.state.conditions).then(res => {
       if(res.code === 0) {
@@ -92,6 +100,7 @@ export default class Outer extends Component {
 
   componentWillMount() {
     this.listAction();
+    userInfoAction.call(this);
   }
   render() {
     const {Content, Footer, Header} = Layout;
@@ -126,7 +135,12 @@ export default class Outer extends Component {
           <React.Fragment>
             <Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('pusher', row._id)}} size="small"><Icon type="edit"/></Button>
             {
-              // <Button style={{marginLeft: 10}} type="danger" size="small"><Icon type="delete"/></Button>
+              this.state.user && this.state.user.role === 3  && <Popconfirm
+                title="您确认要删除这条数据吗?"
+                onConfirm={this.deleteAction.bind(this, row._id)}
+              >
+                <Button type="danger" style={{marginLeft: 10}} size="small"><Icon type="delete"/></Button>
+              </Popconfirm>
             }
           </React.Fragment>
         )

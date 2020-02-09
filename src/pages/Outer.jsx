@@ -3,6 +3,7 @@ import { DatePicker, Layout, Pagination, Table, Tag, Popconfirm, message, Input,
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
+import {userInfoAction} from '../functions/index';
 import OuterModal from '../components/models/OuterGroupModal';
 import PayModal from '../components/models/PayModal';
 
@@ -140,6 +141,7 @@ export default class Outer extends Component {
 
   componentWillMount() {
     this.listAction();
+    userInfoAction.call(this);
     this.pullersListAction();
     this.fruitsListAction();
   }
@@ -263,7 +265,7 @@ export default class Outer extends Component {
               //<Button type="primary" onClick={(e) => {e.stopPropagation(); this.openModelAction('outer',row._id)}} size="small"><Icon type="edit"/></Button>
             }
             {
-              <Popconfirm
+              this.state.user && this.state.user.role === 3  && <Popconfirm
                 title="您确认要删除这条数据吗?"
                 onConfirm={this.deleteAction.bind(this, row._id)}
               >
