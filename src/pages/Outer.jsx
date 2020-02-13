@@ -190,9 +190,9 @@ export default class Outer extends Component {
         render: d => (d.unit && d.unit.title) ? `${d.price} 元/${d.unit.title}` : d.price
       },
       {
-        title: '成本均价',
-        dataIndex: 'avgPrice',
-        render: d => d.toFixed(2)
+        title: '入库价',
+        dataIndex: 'order',
+        render: d => d && d.price ? `${d.price} 元/斤`
       },
       {
         title: '下单数量',
