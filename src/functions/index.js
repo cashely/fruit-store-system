@@ -41,18 +41,15 @@ export function deleteAction({
 
 
 export function multipliedBy(a, b) {
-  return new Bignumber(a).multipliedBy(b).toString();
+  return Number(new Bignumber(a).multipliedBy(b).toFixed(2));
 }
 export function plus(a, b) {
-  console.log(a, b ,'+')
-  return Number(new Bignumber(a).plus(b).toString());
+  return Number(new Bignumber(a).plus(b).toFixed(2));
 }
 export function minus(a, b) {
-  console.log(a, b, '-')
-  return Number(new Bignumber(a).minus(b).toString());
+  return Number(new Bignumber(a).minus(b).toFixed(2));
 }
 
 export function dividedBy(a, b) {
-  console.log(a, b, '/')
   return Number(new Bignumber(a).dividedBy(b).toFixed(2));
 }
