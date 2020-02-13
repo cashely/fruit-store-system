@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Form, Input, Button, Icon, Modal, Select, Table, message, InputNumber, Radio} from 'antd';
 import $ from '../../ajax';
 import _ from 'lodash';
+import {multipliedBy} from '../../functions/index';
 import InnerSelectModal from './InnerSelectModal';
 export default class OuterGroupModal extends Component {
   constructor(props) {
@@ -217,7 +218,7 @@ export default class OuterGroupModal extends Component {
 
         if(this.state.fields[index].unit && this.state.fields[index].packCount && this.state.fields[index].unitCount) {
           const fields = _.cloneDeep(this.state.fields);
-          fields[index].count = this.state.fields[index].packCount * this.state.fields[index].unitCount
+          fields[index].count = multipliedBy(this.state.fields[index].packCount, this.state.fields[index].unitCount)
           this.setState({
             fields
           })
@@ -363,7 +364,7 @@ export default class OuterGroupModal extends Component {
         key: 'j',
         render: (d, r, index) => (
           <React.Fragment>
-            <Input disabled={this.state.fields[index].payStatu === 2} value={this.state.fields[index].payStatu === 2 ? this.state.fields[index].price * this.state.fields[index].packCount : this.state.fields[index].payNumber} style={{width: 100}} onChange={(e) => this.editRowFieldAction(index, 'payNumber', e)} prefix="￥" suffix="元" /> (应付金额: ￥{(this.state.fields[index].price * this.state.fields[index].packCount).toFixed(2)})
+            <Input disabled={this.state.fields[index].payStatu === 2} value={this.state.fields[index].payStatu === 2 ? multipliedBy(this.state.fields[index].price, this.state.fields[index].packCount) : this.state.fields[index].payNumber} style={{width: 100}} onChange={(e) => this.editRowFieldAction(index, 'payNumber', e)} prefix="￥" suffix="元" /> (应付金额: ￥{multipliedBy(this.state.fields[index].price, this.state.fields[index].packCount)})
           </React.Fragment>
         )
       }

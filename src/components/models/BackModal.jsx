@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Form, Input, Button, Icon, Modal, Select, message, Radio} from 'antd';
 import $ from '../../ajax';
 import _ from 'lodash';
+import Bignumber from 'bignumber';
+
 export default class InnerModal extends Component {
   constructor(props) {
     super(props);
@@ -37,7 +39,7 @@ export default class InnerModal extends Component {
       if(fieldname === 'unit' || fieldname === 'packCount' || fieldname === 'unitCount') {
         if(this.state.fields.unit && this.state.fields.packCount && this.state.fields.unitCount) {
           this.setState({
-            fields: Object.assign({}, this.state.fields, {count: this.state.fields.packCount * this.state.fields.unitCount})
+            fields: Object.assign({}, this.state.fields, {count: new Bignumber(this.state.fields.packCount).multipliedBy(this.state.fields.unitCount)})
           })
         }
       }
@@ -97,6 +99,7 @@ export default class InnerModal extends Component {
   componentWillMount() {
     this.unitsListAction();
     this.props.id && this.detailAction();
+    console.log(Bignumber)
   }
   render() {
     const {Item} = Form;

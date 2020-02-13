@@ -3,6 +3,8 @@ const moment = require('moment');
 const path = require('path');
 const fs = require('fs');
 const excel = require('../functions/excel');
+const {minus} = require('../functions/index');
+
 module.exports = {
   list(req, res) {
     const { page = 1, limit = 20, date = [], type } = req.query;
@@ -42,19 +44,34 @@ module.exports = {
     } else if(type === 2) {
       total = count * 1
     }
-    new models.backs({
-      order: _id,
-      count: count
-    }).save().then(() => {
-      const saveCountPromise = models.fruits.updateOne({_id: fruit._id}, {$inc: {total}});
-      saveCountPromise.then((r) => {
-        req.response(200, 'ok');
+
+
+    models.orders.findById(_id).then(order => {
+      new models.backs({
+        order: _id,
+        count: count
+      }).save().then(() => {
+        if(type === 2) {
+          const saveInnerPromise = models.orders.updateOne({_id: order.order}, {$inc: {store: count * 1}});
+          const saveOuterPromise = models.orders.updateOne({_id}, {$inc: {count: count * -1, packCount: count * -1 / order.unitCount, payTotal: count * -1 / order.unitCount * order.price}});
+          return Promise.all([saveInnerPromise, saveOuterPromise])
+        } else {
+          return models.orders.updateOne({_id}, {$inc: {store: count * -1}})
+        }
+      }).then(() => {
+        const saveCountPromise = models.fruits.updateOne({_id: fruit._id}, {$inc: {total}});
+
+        saveCountPromise.then(() => {
+          req.response(200, 'ok');
+        }).catch(err => {
+          console.log(err)
+          req.response(500, err);
+        })
       }).catch(err => {
         console.log(err)
         req.response(500, err);
       })
     }).catch(err => {
-      console.log(err)
       req.response(500, err);
     })
   },
@@ -101,7 +118,7 @@ module.exports = {
       const conditions = {
         $inc: {payNumber: payNumber * 1}
       }
-      if(order.payTotal - order.payNumber === +payNumber) {
+      if(minus(order.payTotal, order.payNumber) <= +payNumber) {
         conditions.payStatu = 2
       }
       return models.orders.updateOne({_id: id}, conditions)

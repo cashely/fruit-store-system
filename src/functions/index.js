@@ -1,5 +1,6 @@
 import $ from '../ajax'
 import {message} from 'antd';
+import Bignumber from 'bignumber';
 export const getUser = () => {
   return new Promise((resolve, reject) => {
     resolve(JSON.parse(sessionStorage.getItem('user')))
@@ -35,4 +36,23 @@ export function deleteAction({
       message.error('操作失败');
     }
   })
+}
+
+
+
+export function multipliedBy(a, b) {
+  return new Bignumber(a).multipliedBy(b).toString();
+}
+export function plus(a, b) {
+  console.log(a, b ,'+')
+  return Number(new Bignumber(a).plus(b).toString());
+}
+export function minus(a, b) {
+  console.log(a, b, '-')
+  return Number(new Bignumber(a).minus(b).toString());
+}
+
+export function dividedBy(a, b) {
+  console.log(a, b, '/')
+  return Number(new Bignumber(a).dividedBy(b).toFixed(2));
 }

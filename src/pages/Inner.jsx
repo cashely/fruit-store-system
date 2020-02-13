@@ -3,7 +3,7 @@ import { DatePicker, Layout, Pagination, Table, Tag, Popconfirm, Progress, Selec
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
-import {userInfoAction} from '../functions/index';
+import {userInfoAction, plus} from '../functions/index';
 import InnerModal from '../components/models/InnerGroupModal';
 import PayModal from '../components/models/PayModal';
 import LostModal from '../components/models/LostModal';
@@ -324,7 +324,7 @@ export default class Inner extends Component {
                 return (
                   <React.Fragment>
                     <b>统计:</b>
-                    <span style={{marginLeft: 10}}>{`总重量:${data.reduce((a, b) => a + b.count, 0) }斤; 总金额:${data.reduce((a, b) => a + b.payTotal, 0)}元`}</span>
+                    <span style={{marginLeft: 10}}>{`总重量:${data.reduce((a, b) => plus(a, b.count), 0) }斤; 总金额:${data.reduce((a, b) => plus(a, b.payTotal), 0)}元`}</span>
                   </React.Fragment>
                 )
               }

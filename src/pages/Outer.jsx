@@ -3,7 +3,7 @@ import { DatePicker, Layout, Pagination, Table, Tag, Popconfirm, message, Input,
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
-import {userInfoAction} from '../functions/index';
+import {userInfoAction, plus, multipliedBy, minus, dividedBy} from '../functions/index';
 import OuterModal from '../components/models/OuterGroupModal';
 import PayModal from '../components/models/PayModal';
 
@@ -207,7 +207,7 @@ export default class Outer extends Component {
         title: '利润',
         key: 'r',
         render:(d) => {
-          return d.order ? ((d.price / d.unitCount - d.order.price) * d.count).toFixed(2) : '无'
+          return d.order ? multipliedBy(minus(dividedBy(d.price, d.unitCount), d.order.price), d.count) : '无'
         }
       },
       {
@@ -326,7 +326,7 @@ export default class Outer extends Component {
                 return (
                   <React.Fragment>
                     <b>统计:</b>
-                    <span style={{marginLeft: 10}}>{`总重量:${data.reduce((a, b) => a + b.count, 0) }斤; 总金额:${data.reduce((a, b) => a + b.payTotal, 0)}元`}</span>
+                    <span style={{marginLeft: 10}}>{`总重量:${data.reduce((a, b) => plus(a, b.count), 0) }斤; 总金额:${data.reduce((a, b) => plus(a, b.payTotal), 0)}元`}</span>
                   </React.Fragment>
                 )
               }

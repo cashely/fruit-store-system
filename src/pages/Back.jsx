@@ -165,12 +165,12 @@ export default class Back extends Component {
         }
       },
       {
-        title: '入库价格(元)',
+        title: '价格(元)',
         dataIndex: 'price',
         key: 'price'
       },
       {
-        title: '入库人员',
+        title: '操作人',
         dataIndex: 'creater',
         key: 'creater',
         render: d => d && d.acount

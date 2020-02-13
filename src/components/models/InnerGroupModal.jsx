@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Form, Input, Button, Icon, Modal, Select, message, Table, Radio} from 'antd';
 import $ from '../../ajax';
 import _ from 'lodash';
+import Bignumber from 'bignumber';
+import {multipliedBy} from '../../functions/index'
 export default class InnerGroupModal extends Component {
   constructor(props) {
     super(props);
@@ -114,9 +116,6 @@ export default class InnerGroupModal extends Component {
       const fruit = _.find(this.state.fruits, {_id: typeof(e) === 'object' ? e.currentTarget.value : e});
       fields[index].avgPrice = fruit.avgPrice
     }
-
-
-    console.log(fields)
     this.setState({
       fields
     }, () => {
@@ -124,7 +123,7 @@ export default class InnerGroupModal extends Component {
 
         if(this.state.fields[index].unit && this.state.fields[index].packCount && this.state.fields[index].unitCount) {
           const fields = _.cloneDeep(this.state.fields);
-          fields[index].count = this.state.fields[index].packCount * this.state.fields[index].unitCount
+          fields[index].count = multipliedBy(this.state.fields[index].packCount, this.state.fields[index].unitCount)
           this.setState({
             fields
           })
@@ -234,7 +233,7 @@ export default class InnerGroupModal extends Component {
         title: '已付款数量',
         render: (d, r, index) => (
           <React.Fragment>
-            <Input disabled={this.state.fields[index].payStatu === 2} value={this.state.fields[index].payStatu === 2 ? this.state.fields[index].price * this.state.fields[index].count : this.state.fields[index].payNumber} style={{width: 100}} onChange={(e) => this.editRowFieldAction(index, 'payNumber', e)} prefix="￥" suffix="元" /> (应付金额: ￥{this.state.fields[index].price * this.state.fields[index].count})
+            <Input disabled={this.state.fields[index].payStatu === 2} value={this.state.fields[index].payStatu === 2 ? new Bignumber(this.state.fields[index].price).multipliedBy(this.state.fields[index].count) : this.state.fields[index].payNumber} style={{width: 100}} onChange={(e) => this.editRowFieldAction(index, 'payNumber', e)} prefix="￥" suffix="元" /> (应付金额: ￥{multipliedBy(this.state.fields[index].price, this.state.fields[index].count)})
           </React.Fragment>
         )
       }

@@ -1,6 +1,7 @@
 const models = require('../model.js');
 const _ = require('lodash');
 const moment = require('moment');
+const {multipliedBy} = require('../functions/index');
 module.exports = {
   list(req, res) {
     const { page = 1, limit = 20, date = [], id, fruit, pusher, ids = [] } = req.query;
@@ -53,10 +54,10 @@ module.exports = {
       order,
       creater: req.user.uid
     };
-    const $payTotal = price * packCount; // 应付款项
+    const $payTotal = multipliedBy(price, packCount); // 应付款项
     if(payStatu === 2) {
       payNumber = $payTotal
-    }else if(+payNumber === $payTotal) {
+    }else if(+payNumber == $payTotal) {
       payStatu = 2
     }
     conditions.payStatu = payStatu;
