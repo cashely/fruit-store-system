@@ -143,10 +143,10 @@ export default class Back extends Component {
         title: '种类',
         dataIndex: 'fruit.title'
       },
-      {
-        title: '总储量',
-        dataIndex: 'fruit.total',
-      },
+      // {
+      //   title: '总储量',
+      //   dataIndex: 'fruit.total',
+      // },
       {
         title: '总重量',
         dataIndex: 'count',
@@ -243,7 +243,7 @@ export default class Back extends Component {
           </Form>
         </Header>
         <Content style={{overflow: 'auto'}}>
-          <Table rowKey="_id" onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.orders} size="middle" bordered pagination={false}/>
+          <Table scroll={{x: true}} rowKey="_id" onRow={r => {return {onClick: e => {} }}} columns={columns} dataSource={this.state.orders} size="middle" bordered pagination={false}/>
           {
             this.state.visible.back && <BackModal id={this.state.id} visible={this.state.visible.back} onOk={this.okBackModalAction.bind(this)} onCancel={this.cancelModelAction.bind(this, 'back')}/>
           }

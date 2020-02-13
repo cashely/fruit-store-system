@@ -75,10 +75,10 @@ const columns = [
     title: '种类',
     dataIndex: 'fruit.title'
   },
-  {
-    title: '总储量',
-    dataIndex: 'fruit.total',
-  },
+  // {
+  //   title: '总储量',
+  //   dataIndex: 'fruit.total',
+  // },
   {
     title: '总重量',
     dataIndex: 'count',
