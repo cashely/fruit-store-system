@@ -192,7 +192,7 @@ export default class Outer extends Component {
       {
         title: '入库价',
         dataIndex: 'order',
-        render: d => d && d.price ? `${d.price} 元/斤`
+        render: d => d && d.price ? `${d.price} 元/斤` : '无'
       },
       {
         title: '下单数量',
