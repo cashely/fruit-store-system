@@ -11,6 +11,7 @@ export default class Back extends Component {
     super(props);
     this.state = {
       orders: [],
+      fruits: [],
       total: 0,
       page: 1,
       limit: 20,
@@ -25,7 +26,9 @@ export default class Back extends Component {
       },
       conditions: {
         date: [],
-        type: 0
+        type: 0,
+        fruit: '',
+        order: '',
       }
     }
   }
@@ -84,6 +87,16 @@ export default class Back extends Component {
     })
   }
 
+  fruitsListAction() {
+    $.get('/fruits', {limit: 1000}).then(res => {
+      if(res.code === 0) {
+        this.setState({
+          fruits: res.data
+        })
+      }
+    })
+  }
+
   pageChangeAction(page, pageSize) {
     this.setState({
       page
@@ -110,6 +123,7 @@ export default class Back extends Component {
 
   componentWillMount() {
     this.listAction();
+    this.fruitsListAction();
   }
   render() {
     const {Content, Footer, Header} = Layout;
@@ -235,6 +249,16 @@ export default class Back extends Component {
                 <Select.Option value={0}>全部</Select.Option>
                 <Select.Option value={1}>入库</Select.Option>
                 <Select.Option value={2}>出库</Select.Option>
+              </Select>
+            </Form.Item>
+            <Form.Item label="订单号">
+              <Input style={{width: 240}} value={this.state.conditions.order} onChange={e => this.conditionsChangeAction(e, 'order', 'input')} />
+            </Form.Item>
+            <Form.Item label="种类">
+              <Select style={{width: 100}} dropdownMatchSelectWidth={false} allowClear placeholder="全部" value={this.state.conditions.fruit} showSearch filterOption={(v,s) => s.props.children.includes(v)}  onChange={e => this.conditionsChangeAction(e, 'fruit')}>
+                {
+                  this.state.fruits.map(fruit => <Option value={fruit._id} key={fruit._id} >{fruit.title}</Option>)
+                }
               </Select>
             </Form.Item>
             <Form.Item>

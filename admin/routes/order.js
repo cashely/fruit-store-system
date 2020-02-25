@@ -7,7 +7,7 @@ const {minus} = require('../functions/index');
 
 module.exports = {
   list(req, res) {
-    const { page = 1, limit = 20, date = [], type } = req.query;
+    const { page = 1, limit = 20, date = [], type, fruit = '', order = '' } = req.query;
     let formatDate = date.map(item => {
       return moment(JSON.parse(item)).format('YYYY-MM-DD');
     });
@@ -20,6 +20,12 @@ module.exports = {
       if(formatDate[1]) {
         conditions.createdAt = { $gte: formatDate[0], $lte: moment(formatDate[1]).add(1, 'days').format('YYYY-MM-DD')}
       }
+    }
+    if(fruit) {
+      conditions.fruit = fruit
+    }
+    if(order) {
+      conditions._id = order
     }
     console.log(conditions)
     models.orders.find(conditions).populate('creater').populate('fruit').populate('unit').populate('pusher').populate('puller').sort({_id: -1}).skip((+page - 1) * limit).limit(+limit).then(orders => {
@@ -90,12 +96,11 @@ module.exports = {
     })
   },
   total(req, res) {
-    const {date = [], type} = req.query;
+    const {date = [], type, fruit = '', order = ''} = req.query;
     let conditions = {};
     let formatDate = date.map(item => {
       return moment(JSON.parse(item)).format('YYYY-MM-DD');
     });
-    let conditions = {};
     if(!!+type) {
       conditions.type = type
     }
@@ -104,6 +109,12 @@ module.exports = {
       if(formatDate[1]) {
         conditions.createdAt = { $gte: formatDate[0], $lte: moment(formatDate[1]).add(1, 'days').format('YYYY-MM-DD')}
       }
+    }
+    if(fruit) {
+      conditions.fruit = fruit
+    }
+    if(order) {
+      conditions._id = order
     }
     models.orders.countDocuments(conditions).then(count => {
       req.response(200, count);
