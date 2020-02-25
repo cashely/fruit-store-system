@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DatePicker, Layout, Pagination, Table, Tag, Select, Progress, Button, Icon, Upload, Form } from 'antd';
+import { DatePicker, Layout, Input, Pagination, Table, Tag, Select, Progress, Button, Icon, Upload, Form } from 'antd';
 import $ from '../ajax';
 import m from 'moment';
 import _ from 'lodash';
@@ -127,6 +127,7 @@ export default class Back extends Component {
   }
   render() {
     const {Content, Footer, Header} = Layout;
+    const {Option} = Select;
     const columns = [
       {
         title: '序号',
